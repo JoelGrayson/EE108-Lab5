@@ -1,12 +1,17 @@
 module wave_display_top(
     input clk,
     input reset,
+    // From Lab 4
     input new_sample,
     input [15:0] sample,
+    
+    // Input from VGA controller
     input [10:0] x,  // [0..1279]
     input [9:0]  y,  // [0..1023]     
     input valid,
     input vsync,
+    
+    // Outputted to VGA controller
     output [7:0] r,
     output [7:0] g,
     output [7:0] b
