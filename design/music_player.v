@@ -29,7 +29,6 @@ module music_player(
     // If you reduce this to 100 your simulation will be 10x faster.
     parameter BEAT_COUNT = 1000;
 
-
 //
 //  ****************************************************************************
 //      Master Control Unit
@@ -53,7 +52,14 @@ module music_player(
         .song(current_song),
         .song_done(song_done)
     );
-
+    /*
+    always @(posedge clk) begin  
+        $display("mcu play: %d", play);
+        $display("mcu reset_player: %d", reset_player);
+        $display("mcu song: %d", current_song);
+        $display("mcu song_done: %d", song_done);      
+    end
+    */
 //
 //  ****************************************************************************
 //      Song Reader
@@ -74,7 +80,14 @@ module music_player(
         .new_note(new_note),
         .note_done(note_done)
     );
-
+    /*
+    always @(posedge clk) begin  
+        $display("song_reader song_done: %d", play);
+        $display("song_reader note: %d", note_to_play);
+        $display("song_reader duration: %d", duration_for_note);
+        $display("song_reader new_note: %d", new_note);      
+    end
+    */
 //   
 //  ****************************************************************************
 //      Note Player
@@ -103,7 +116,12 @@ module music_player(
         .sample_out(note_sample0),
         .new_sample_ready(note_sample_ready0)
     );
-      
+    /*
+    always @(posedge clk) begin  
+        $display("note_player sample_out: %d", note_sample0);
+        $display("note_player new_sample_ready: %d", note_sample_ready0);
+    end
+    */
 //   
 //  ****************************************************************************
 //      Beat Generator
@@ -128,7 +146,8 @@ module music_player(
     wire [15:0] sample_out0; 
 
     dffr pipeline_ff_nsg (.clk(clk), .r(reset), .d(new_sample_generated0), .q(new_sample_generated));
-    dffr #(.WIDTH(16)) pipeline_ff_sample_out (.clk(clk), .r(reset), .d(sample_out0), .q(sample_out));
+    //dffr #(.WIDTH(16)) pipeline_ff_sample_out (.clk(clk), .r(reset), .d(sample_out0), .q(sample_out));
+    assign sample_out = sample_out0;
 
     assign new_sample_generated0 = generate_next_sample;
     codec_conditioner codec_conditioner(
