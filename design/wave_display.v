@@ -40,34 +40,34 @@ module wave_display (
     
     // BEGIN (2)
     // Calculate curr_y from read_value
-    wire [5:0] curr_y;
-    wire y_msb; //only when y_msb == 0 is it drawn
-    wire _y_lsb; //thrown out so starting with _ makes you remember it is not used
-    assign { y_msb, curr_y, _y_lsb } = read_value; //read_val is 8 bits, so curr_y is 6 bits. Since double pixel heigth it is 128 pixels which is ok I guess
+    wire [7:0] curr_y;
+    assign curr_y = read_value / 2 + 6'd32;
     // END (2)
     
     // BEGIN (3)
     // Remember previous y_value (curr_y) in p_y (p_ standing for previous_)
     wire [5:0] p_y;
-    dffr #(6) p_y_dff(
+    dffr #(8) p_y_dff(
         .d(curr_y),
         .q(p_y),
         .clk(clk),
         .r(reset)
     );
     
+    wire [7:0] y_trunc = y[8:1]; //drop MSB and LSB
+    
     // END (3)
     
     // BEGIN (4)
-    wire is_y_in_region = y[9] == 0;
+    wire is_y_in_region = y[9] == 0; //in top half of screen
     wire is_y_in_wave =
         // p_y < y < curr_y - wave going up
-        (p_y < y && y < curr_y)
+        (p_y < y && y_trunc < curr_y)
         ||
         // curr_y < y < p_y - wave going down
-        (curr_y < y && y << p_y)
+        (curr_y < y && y_trunc << p_y)
         ;
-    assign valid_pixel = is_y_in_region & is_x_in_region; //1'b1;//is_y_in_region & is_y_in_wave & is_x_in_region & valid;
+    assign valid_pixel = is_y_in_region & is_x_in_region & is_y_in_wave & valid;
     assign { r, g, b } = valid_pixel ? `WHITE : `BLACK;
     // END (4)
 endmodule
