@@ -11,7 +11,7 @@ module wave_capture_tb;
     reg reset;
     reg new_sample_ready;
     reg [15:0] new_sample_in;
-    wire wave_display_idle;
+    reg wave_display_idle;
     
     // Outputs controlled by wave_capture
     wire [8:0] write_address;
@@ -34,18 +34,16 @@ module wave_capture_tb;
     integer cycle; //learned about these from AI
     initial cycle = 0;
     
-    initial begin
-        forever begin
-            clk = 1'b0;
-            #5;
-            clk = 1'b1;
-            #5;
-            cycle = cycle + 1;
-        end
+    always begin
+        clk = 1'b1;
+        #5;
+        clk = 1'b0;
+        #5;
+        cycle = cycle + 1;
     end
     
     initial begin
-        #5; //set variables in the middle of a cycle
+        #9; //set variables in the middle of a cycle. Gives #1 for the variable to settle before the next clock cycle
         // In the middle of cycle 0. Setting up variablesr for cycle 1
         reset = 1'b1;
         #10;
@@ -53,6 +51,9 @@ module wave_capture_tb;
         reset = 1'b0;
         new_sample_ready = 1'b0;
         new_sample_in = 16'b0;
+        wave_display_idle = 1'b0;
+        
+
         #10;
         // State should be armed
         if (dut.state != `ARMED_STATE)

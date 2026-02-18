@@ -43,7 +43,8 @@ module wave_capture (
         .d(new_sample_in),
         .q(curr_sample),
         .en(new_sample_ready),
-        .r(reset)
+        .r(reset),
+        .clk(clk)
     );
     
     // prev_sample
@@ -52,19 +53,22 @@ module wave_capture (
         .d(curr_sample),
         .q(prev_sample),
         .en(new_sample_ready),
-        .r(reset)
+        .r(reset),
+        .clk(clk)
     );
     wire is_curr_sample_negative = curr_sample[15];
     wire is_prev_sample_negative = prev_sample[15];
     
     
-    dff #(1) read_index_dff(
+    dffr #(1) read_index_dff(
         .d( //next read index
             (state == `WAIT_STATE && next_state == `ARMED_STATE) //transitioning from wait to armed state
             ? ~read_index
             : read_index
         ),
-        .q(read_index)
+        .q(read_index),
+        .clk(clk),
+        .r(reset)
     );
     
     
@@ -94,5 +98,5 @@ module wave_capture (
     assign write_address = { ~read_index, count };
     assign write_sample = curr_sample[15:8] //use curr_sample instead of new_sample so 1-cycle delay. When new_sample_ready occurs, new_sample is the new value so we need the curr_sample
          + 8'd128; //so -128 is mapped to 0 and 127 is mapped to 255
-    assign write_en = new_sample_ready & state == `ACTIVE_STATE;
+    assign write_enable = new_sample_ready & state == `ACTIVE_STATE;
 endmodule
