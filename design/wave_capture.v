@@ -34,20 +34,26 @@ module wave_capture (
         .r(reset)
     );
     
-    
-    dffr #(1) is_curr_sample_negative_dff(
-        
+    // DFFs that are a chain of delayed from new_sample
+    // Current sample
+    wire [15:0] curr_sample;
+    dffre #(15) curr_sample_dff(
+        .d(new_sample_in),
+        .q(curr_sample),
+        .en(new_sample_ready),
         .r(reset)
     );
     
-//    // Previous sample. Used to see if a positive to negative crossing occurred
-//    wire [15:0] prev_sample_is_negative; //if this value is true and the current sample is positive, then go from armed to active state
-//    dffre #(16) prev_sample_is_negative_dff(
-//        .d(prev_sample[15]), //MSB of new_sample_in is 1 when it is negative because of two's complement
-//        .q(prev_sample_is_negative), //prev_sample is written to on the next clock cycle so it always has the previous 
-//        .r(),
-//        .en(new_sample_ready)
-//    );
+    // prev_sample
+    wire [15:0] prev_sample;
+    dffre #(15) prev_sample_dff( //delayed by another cycle from curr_sample_dff
+        .d(curr_sample),
+        .q(prev_sample),
+        .en(new_sample_ready),
+        .r(reset)
+    );
+    wire is_curr_sample_negative = curr_sample[15];
+    wire is_prev_sample_negative = prev_sample[15];
     
     
     // Compute next_state
@@ -63,19 +69,11 @@ module wave_capture (
             `WAIT_STATE: next_count = 8'b0;
         endcase
     end
-    /*
-    always @(*) begin
-        case ({state, count})
-            {`ARMED_STATE, 7'bx}: next_count = 0;
-            {`ACTIVE_STATE, }
-            {`ACTIVE_STATE, }: next_count = count + 1;
-        endcase
-    end
-    */
     
     // Outputs
     assign write_address = { ~read_index, count };
-    assign write_sample = new_sample_in[15:8]; //8 most significant bits
+    assign write_sample = curr_sample[15:8]; //so 1-cycle delay. When new_sample_ready occurs, new_sample is the new value so we need the curr_sample
+    assign write_en = new_sample_ready & state == `ACTIVE_STATE;
     
     // Write enable should be true when curr == 1 and prev == 0 (about to transition to 
 endmodule
