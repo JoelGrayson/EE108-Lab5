@@ -43,7 +43,8 @@ module wave_capture_tb;
     end
     
     initial begin
-        #9; //set variables in the middle of a cycle. Gives #1 for the variable to settle before the next clock cycle
+//        #9; //set variables in the middle of a cycle. Gives #1 for the variable to settle before the next clock cycle
+        #1;
         // In the middle of cycle 0. Setting up variablesr for cycle 1
         reset = 1'b1;
         #10;
@@ -68,13 +69,13 @@ module wave_capture_tb;
         if (dut.curr_sample != 16'b1110_0000_0000_0000)
             $display("Test 2 failed");
         
-        #90; //in cycle 13. Settign up for cycle 14
+        #100; //in cycle 14. Will affect cycle 15
         new_sample_in = 16'b110_0_0000_0000_0000;
         new_sample_ready = 1'b1;
         #10;
         new_sample_ready = 1'b0;
         
-        #90; //in cycle 23. Setting up for cycl 24
+        #90; //in cycle 24
         new_sample_in = 16'b010_0_0000_0000_0000;
         new_sample_ready = 1'b1;
         #10;
@@ -82,13 +83,20 @@ module wave_capture_tb;
         
         
         // Should have triggered shift
-        repeat (258) begin
+        repeat (257) begin
             #90;
             new_sample_in = { cycle[7:0], 8'b1111_0000 }; //this way the sample is different every time due to cycle
             new_sample_ready = 1'b1;
             #10;
             new_sample_ready = 1'b0;
         end
+        
+        // Now go back from wait to beginning, also testing if read_index swaps
+        wave_display_idle = 1'b1;
+        #10;
+        wave_display_idle = 1'b0;
+        
+        #50;
         
         $finish;
     end

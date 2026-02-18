@@ -28,11 +28,12 @@ module wave_capture (
     // Count
     wire [7:0] count; //current count
     reg [7:0] next_count;
-    dffr #(8) count_dff( //max count is 256 (8 bits)
+    dffre #(8) count_dff( //max count is 256 (8 bits)
         .d(next_count),
         .q(count),
         .clk(clk),
-        .r(reset)
+        .r(reset),
+        .en(new_sample_ready)
     );
     
     
