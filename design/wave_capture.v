@@ -24,6 +24,7 @@ module wave_capture (
         .clk(clk)
     );
     
+    
     // Count
     wire [7:0] count; //current count
     reg [7:0] next_count;
@@ -34,10 +35,11 @@ module wave_capture (
         .r(reset)
     );
     
+    
     // DFFs that are a chain of delayed from new_sample
     // Current sample
     wire [15:0] curr_sample;
-    dffre #(15) curr_sample_dff(
+    dffre #(16) curr_sample_dff(
         .d(new_sample_in),
         .q(curr_sample),
         .en(new_sample_ready),
@@ -46,7 +48,7 @@ module wave_capture (
     
     // prev_sample
     wire [15:0] prev_sample;
-    dffre #(15) prev_sample_dff( //delayed by another cycle from curr_sample_dff
+    dffre #(16) prev_sample_dff( //delayed by another cycle from curr_sample_dff
         .d(curr_sample),
         .q(prev_sample),
         .en(new_sample_ready),
@@ -59,7 +61,12 @@ module wave_capture (
     // Compute next_state
     always @(*) begin
         case (state)
-            `ARMED_STATE: next_state = count
+            `ARMED_STATE: next_state = (!is_curr_sample_negative && is_prev_sample_negative) ? `ACTIVE_STATE : `ARMED_STATE;
+            `ACTIVE_STATE: next_state = (count == 8'd255 && new_sample_ready) ? `WAIT_STATE : `ACTIVE_STATE;
+            `WAIT_STATE: next_state = wave_display_idle ? `ARMED_STATE : `WAIT_STATE;
+            default: next_state = `ARMED_STATE;
+        endcase
+    end
     
     // Compute next_count
     always @(*) begin
@@ -67,6 +74,7 @@ module wave_capture (
             `ARMED_STATE: next_count = 8'b0;
             `ACTIVE_STATE: next_count = count + 1'b1;
             `WAIT_STATE: next_count = 8'b0;
+            default: next_count = 8'b0;
         endcase
     end
     
@@ -74,6 +82,4 @@ module wave_capture (
     assign write_address = { ~read_index, count };
     assign write_sample = curr_sample[15:8]; //so 1-cycle delay. When new_sample_ready occurs, new_sample is the new value so we need the curr_sample
     assign write_en = new_sample_ready & state == `ACTIVE_STATE;
-    
-    // Write enable should be true when curr == 1 and prev == 0 (about to transition to 
 endmodule
