@@ -55,16 +55,25 @@ module wave_display (
     
     wire [7:0] y_trunc = y[8:1]; //drop MSB (only top half used) and LSB (fattening) so 10 bits -> 8 bits
     
+    // ppy_dff
+    wire [7:0] pp_y;
+    dffr #(8) pp_y_dff( //delayed by 2 cycles from curr_y because p_y and curr_y alone lead to dotty curves
+        .d(p_y),
+        .q(pp_y),
+        .clk(clk),
+        .r(reset)
+    );
+    
     // END (3)
     
     // BEGIN (4)
     wire is_y_in_region = y[9] == 0; //in top half of screen
     wire is_y_in_wave =
-        // p_y < y < curr_y - wave going up
-        (p_y <= y_trunc && y_trunc <= curr_y)
+        // pp_y < y < curr_y - wave going up
+        (pp_y <= y_trunc && y_trunc <= curr_y)
         ||
-        // curr_y < y < p_y - wave going down
-        (curr_y <= y_trunc && y_trunc <= p_y)
+        // curr_y < y < pp_y - wave going down
+        (curr_y <= y_trunc && y_trunc <= pp_y)
         ; //use +-1 to add thickness to the line
     assign valid_pixel = is_y_in_region //in top half of screen
                         & is_x_in_region //in quadrant 1 or 2 x-wise
