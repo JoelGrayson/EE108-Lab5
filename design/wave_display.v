@@ -26,7 +26,7 @@ module wave_display (
     wire is_x_in_region = (x_region == 3'b001) | (x_region == 3'b010); //used to see if valid
     
     // Assign read_addr based on x variables and read_index
-    assign read_address = { read_index, x_region == 2'b10, x_middle }; //1+1+7=9
+    assign read_address = { read_index, x_region == 3'b010, x_middle }; //1+1+7=9
     // Commented out because you cannot use a wire with a case statement, only a wire (learned this from AI)
 //    always @(*) begin
 //        case (x_region)
@@ -40,7 +40,7 @@ module wave_display (
     // BEGIN (2)
     // Calculate curr_y from read_value
     wire [7:0] curr_y;
-    assign curr_y = read_value << 1'b1 + 6'd32; // /2+32
+    assign curr_y = read_value >> 1'b1 + 6'd32; // /2+32
     // END (2)
     
     // BEGIN (3)
