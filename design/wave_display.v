@@ -40,12 +40,12 @@ module wave_display (
     // BEGIN (2)
     // Calculate curr_y from read_value
     wire [7:0] curr_y;
-    assign curr_y = read_value >> 1'b1 + 6'd32; // /2+32
+    assign curr_y = (read_value >> 1'b1) + 6'd32; // /2+32
     // END (2)
     
     // BEGIN (3)
     // Remember previous y_value (curr_y) in p_y (p_ standing for previous_)
-    wire [5:0] p_y;
+    wire [7:0] p_y;
     dffr #(8) p_y_dff(
         .d(curr_y),
         .q(p_y),
@@ -64,7 +64,7 @@ module wave_display (
         (p_y < y && y_trunc < curr_y)
         ||
         // curr_y < y < p_y - wave going down
-        (curr_y < y && y_trunc << p_y)
+        (curr_y < y && y_trunc < p_y)
         ;
     assign valid_pixel = is_y_in_region //in top half of screen
                         & is_x_in_region //in quadrant 1 or 2 x-wise
