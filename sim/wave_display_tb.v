@@ -76,5 +76,7 @@ module wave_display_tb;
         x = 4;
         y = 4;
         $display("When cycle = %d, y = %d", cycle, y);
+        
+        
     end
 endmodule

@@ -61,15 +61,15 @@ module wave_display (
     wire is_y_in_region = y[9] == 0; //in top half of screen
     wire is_y_in_wave =
         // p_y < y < curr_y - wave going up
-        (p_y < y && y_trunc < curr_y)
+        (p_y <= y_trunc && y_trunc <= curr_y)
         ||
         // curr_y < y < p_y - wave going down
-        (curr_y < y && y_trunc < p_y)
-        ;
+        (curr_y <= y_trunc && y_trunc <= p_y)
+        ; //use +-1 to add thickness to the line
     assign valid_pixel = is_y_in_region //in top half of screen
                         & is_x_in_region //in quadrant 1 or 2 x-wise
                         & is_y_in_wave
                         & valid;
-    assign { r, g, b } = valid_pixel ? `WHITE : `BLACK;
+    assign { r, g, b } = `WHITE; //rgb will be blacked out if valid_pixel is false by the wave_display_top module
     // END (4)
 endmodule
