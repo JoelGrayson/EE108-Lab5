@@ -18,16 +18,15 @@ module wave_display (
     // BEGIN (1)
     // x is msb (thrown away), region (2 bits), middle (7 bits), and lsb (thrown away)
     // middle and real_index are used to construct real_addr
-    wire x_msb, x_lsb; //thrown away
-    wire [1:0] x_region;
-    wire [6:0] x_middle; //1+2+7+1=11
-    assign { x_msb, x_region, x_middle, x_lsb } = x;
+    wire _x_lsb; //thrown away. LSB thrown away so that two x-pixels maps to one changed x-value, making the graph thicker 
+    wire [2:0] x_region;
+    wire [6:0] x_middle; //3+7+1=11
+    assign { x_region, x_middle, _x_lsb } = x;
     
-    wire is_x_in_region = (x_region == 2'b01) | (x_region == 2'b10); //used to see if valid
+    wire is_x_in_region = (x_region == 2'b001) | (x_region == 2'b010); //used to see if valid
     
     // Assign read_addr based on x variables and read_index
-    assign read_address = { read_index, x_region == 2'b10, x_middle };
-    
+    assign read_address = { read_index, x_region == 2'b10, x_middle }; //1+1+7=9
     // Commented out because you cannot use a wire with a case statement, only a wire (learned this from AI)
 //    always @(*) begin
 //        case (x_region)
@@ -41,7 +40,7 @@ module wave_display (
     // BEGIN (2)
     // Calculate curr_y from read_value
     wire [7:0] curr_y;
-    assign curr_y = read_value / 2 + 6'd32;
+    assign curr_y = read_value << 1'b1 + 6'd32; // /2+32
     // END (2)
     
     // BEGIN (3)
@@ -54,7 +53,7 @@ module wave_display (
         .r(reset)
     );
     
-    wire [7:0] y_trunc = y[8:1]; //drop MSB and LSB
+    wire [7:0] y_trunc = y[8:1]; //drop MSB (only top half used) and LSB (fattening) so 10 bits -> 8 bits
     
     // END (3)
     
