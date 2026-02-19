@@ -20,10 +20,10 @@ module wave_display (
     // middle and real_index are used to construct real_addr
     wire _x_lsb; //thrown away. LSB thrown away so that two x-pixels maps to one changed x-value, making the graph thicker 
     wire [2:0] x_region;
-    wire [6:0] x_middle; //3+7+1=11
-    assign { x_region, x_middle, _x_lsb } = x;
+    wire [6:0] x_middle;
+    assign { x_region, x_middle, _x_lsb } = x; //3+7+1=11
     
-    wire is_x_in_region = (x_region == 2'b001) | (x_region == 2'b010); //used to see if valid
+    wire is_x_in_region = (x_region == 3'b001) | (x_region == 3'b010); //used to see if valid
     
     // Assign read_addr based on x variables and read_index
     assign read_address = { read_index, x_region == 2'b10, x_middle }; //1+1+7=9
@@ -66,7 +66,10 @@ module wave_display (
         // curr_y < y < p_y - wave going down
         (curr_y < y && y_trunc << p_y)
         ;
-    assign valid_pixel = is_y_in_region & is_x_in_region & is_y_in_wave & valid;
+    assign valid_pixel = is_y_in_region //in top half of screen
+                        & is_x_in_region //in quadrant 1 or 2 x-wise
+                        & is_y_in_wave
+                        & valid;
     assign { r, g, b } = valid_pixel ? `WHITE : `BLACK;
     // END (4)
 endmodule
