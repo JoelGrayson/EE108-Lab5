@@ -43,42 +43,46 @@ module wave_display (
     assign curr_y = (read_value >> 1'b1) + 6'd32; // /2+32
     // END (2)
     
+    wire [8:0] p_read_address;
+    dffr #(9) p_read_address_dff(
+        .d(read_address),
+        .q(p_read_address),
+        .clk(clk),
+        .r(reset)
+    );
+    
+    
     // BEGIN (3)
     // Remember previous y_value (curr_y) in p_y (p_ standing for previous_)
     wire [7:0] p_y;
-    dffr #(8) p_y_dff(
+    dffre #(8) p_y_dff(
         .d(curr_y),
         .q(p_y),
         .clk(clk),
-        .r(reset)
+        .r(reset),
+        .en(read_address != p_read_address)
     );
     
     wire [7:0] y_trunc = y[8:1]; //drop MSB (only top half used) and LSB (fattening) so 10 bits -> 8 bits
     
-    // ppy_dff
-    wire [7:0] pp_y;
-    dffr #(8) pp_y_dff( //delayed by 2 cycles from curr_y because p_y and curr_y alone lead to dotty curves
-        .d(p_y),
-        .q(pp_y),
-        .clk(clk),
-        .r(reset)
-    );
     
     // END (3)
     
     // BEGIN (4)
     wire is_y_in_region = y[9] == 0; //in top half of screen
     wire is_y_in_wave =
-        // pp_y < y < curr_y - wave going up
-        (pp_y <= y_trunc && y_trunc <= curr_y)
+        // p_y < y < curr_y - wave going up
+        (p_y <= y_trunc && y_trunc <= curr_y)
         ||
-        // curr_y < y < pp_y - wave going down
-        (curr_y <= y_trunc && y_trunc <= pp_y)
-        ; //use +-1 to add thickness to the line
+        // curr_y < y < p_y - wave going down
+        (curr_y <= y_trunc && y_trunc <= p_y)
+        ;
+    wire is_x_beyond_artifact = !(x_region == 3'b001 && x_middle < 2); //chop off the beg
     assign valid_pixel = is_y_in_region //in top half of screen
                         & is_x_in_region //in quadrant 1 or 2 x-wise
                         & is_y_in_wave
-                        & valid;
+                        & valid
+                        & is_x_beyond_artifact;
     assign { r, g, b } = `WHITE; //rgb will be blacked out if valid_pixel is false by the wave_display_top module
     // END (4)
 endmodule

@@ -55,28 +55,53 @@ module wave_display_tb;
         // In the middle of cycle 1. Setting up variables for cycle 2
         reset = 1'b0;
         x = 0; //start crawling up
-        y = 10;
+        y = 3;
         valid = 1'b1;
         read_index = 1'b0;
         // read_value from RAM
         
-        #10;
-        x = 1;
-        y = 0;
-        $display("When cycle = %d, y = %d", cycle, y);
-        #10;
-        x = 2;
-        y = 2;
-        $display("When cycle = %d, y = %d", cycle, y);
-        #10;
-        x = 3;
-        y = 4;
-        $display("When cycle = %d, y = %d", cycle, y);
-        #10;
-        x = 4;
-        y = 4;
-        $display("When cycle = %d, y = %d", cycle, y);
+        // Imagine as a 5 by 5 display
         
+        #10 x = 1; y = 0;
+        #10 x = 2;
+        #10 x = 3;
+        #10 x = 4;
+        #10 x = 5;
+        $display("Finished y = 0 on cycle %d", cycle);
         
+        #10 x = 1; y = 1;
+        #10 x = 2;
+        #10 x = 3;
+        #10 x = 4;
+        #10 x = 5;
+        $display("Finished y = 1 on cycle %d", cycle);
+
+        #10 x = 1; y = 2;
+        #10 x = 2;
+        #10 x = 3;
+        #10 x = 4;
+        #10 x = 5;
+        $display("Finished y = 2 on cycle %d", cycle);
+        
+        #10 x = 1; y = 3;
+        #10 x = 2;
+        #10 x = 3;
+        #10 x = 4;
+        #10 x = 5;
+        $display("Finished y = 3 on cycle %d", cycle);
+        
+        #10 x = 1; y = 4;
+        #10 x = 2;
+        #10 x = 3;
+        #10 x = 4;
+        #10 x = 5;
+        $display("Finished y = 4 on cycle %d", cycle);
+        
+        #10 x = 1; y = 5;
+        #10 x = 2;
+        #10 x = 3;
+        #10 x = 4;
+        #10 x = 5;
+        $display("Finished y = 5 on cycle %d", cycle);
     end
 endmodule
