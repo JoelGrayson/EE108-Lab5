@@ -21,8 +21,8 @@ module wave_display (
     output wire [7:0] b
 );
     // BEGIN (1)
-    wire is_x_in_region = x >= `INIT_X && x <= `INIT_X + `WIDTH;
-    wire is_y_in_region = y >= `INIT_Y && y <= `INIT_Y + (`HEIGHT / 2'd2) + 16; //this ensures only one is shown (top vertical half, not just the bottom of the screen)
+    wire is_x_in_region = x >= `INIT_X && x <= `INIT_X + (`WIDTH / 9'd256) * 9'd256; //remove x-artifacts at end due to integer division truncation
+    wire is_y_in_region = y >= `INIT_Y && y <= `INIT_Y + (`HEIGHT / 2'd2) + 15; //this ensures only one is shown (top vertical half, not just the bottom of the screen)
     // there are 256 data addresses and WIDTH variables, which means WIDTH/256 = 3.125 or 3 x-pixels per y-value. 
     assign read_address = ({ read_index, x } - `INIT_X) / (`WIDTH / 9'd256); //x_scaled. /3    
     
