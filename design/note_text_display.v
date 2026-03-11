@@ -1,0 +1,97 @@
+module note_text_display(
+    input clk,
+    input reset,
+    input wire [7:0] x_scaled, //0 to 255
+    input wire [7:0] y_scaled, //0 to 255
+    input wire [7:0] curr_y, //from the RAM
+    input wire in_region, //bool indicating that in the region. When false, the y_scaled value can't be trusted
+
+    output wire is_pixel_on
+);
+    // BEGIN (1) curr_note_letter, p_note_letter, pp_note_letter
+    wire [3:0] curr_note_letter = (curr_y % 12) + 1; //so that 0 is nothing. A is 1.
+    wire [3:0] temp_p_note_letter, p_note_letter, pp_note_letter /*anteprevious*/;
+    dffr #(4) temp_p_note_letter_dff(
+        .d(curr_note_letter),
+        .q(temp_p_note_letter),
+        .clk(clk),
+        .r(reset)
+    );
+
+    wire note_just_changed = curr_note_letter != temp_p_note_letter;
+    dffre #(4) p_note_letter_dff(
+        .d(temp_p_note_letter),
+        .q(p_note_letter),
+        .clk(clk),
+        .r(reset),
+        .en(note_just_changed)
+    );
+
+    dffre #(4) pp_note_letter_dff(
+        .d(p_note_letter),
+        .q(pp_note_letter),
+        .en(note_just_changed),
+        .r(reset),
+        .clk(clk)
+    );
+
+
+    // BEGIN (2) Show note_letter with letter_box
+    wire cell1_is_pixel_on, cell2_is_pixel_on, cell4_is_pixel_on, cell5_is_pixel_on, cell7_is_pixel_on, cell8_is_pixel_on;
+    wire is_y_in_region = scaled_y >= 0 && scaled_y <= 32;
+    // Current note
+    letter_box cell1(
+        .in_region(scaled_x >= 32 * 0 && scaled_x <= 32 * 1 && is_y_in_region),
+        .rel_x(scaled_x),
+        .rel_y(scaled_y / 2),
+        .letter(curr_note),
+        .is_second_char(0),
+        .is_pixel_on(cell1_is_pixel_on)
+    );
+    letter_box cell2(
+        .in_region(scaled_x >= 32 * 1 && scaled_x <= 32 * 2 && is_y_in_region),
+        .rel_x(scaled_x - 32 * 1),
+        .rel_y(scaled_y / 2),
+        .letter(curr_note),
+        .is_second_char(1),
+        .is_pixel_on(cell2_is_pixel_on)
+    );
+    // Previous note
+    letter_box cell4(
+        .in_region(scaled_x >= 32 * 3 && scaled_x <= 32 * 3 && is_y_in_region),
+        .rel_x(scaled_x - 32 * 3),
+        .rel_y(scaled_y / 2),
+        .letter(p_note),
+        .is_second_char(0),
+        .is_pixel_on(cell4_is_pixel_on)
+    );
+    letter_box cell5(
+        .in_region(scaled_x >= 32 * 4 && scaled_x <= 32 * 4 && is_y_in_region),
+        .rel_x(scaled_x - 32 * 4),
+        .rel_y(scaled_y / 2),
+        .letter(p_note),
+        .is_second_char(1),
+        .is_pixel_on(cell5_is_pixel_on)
+    );
+    // Anteprevious note
+    letter_box cell7(
+        .in_region(scaled_x >= 32 * 6 && scaled_x <= 32 * 6 && is_y_in_region),
+        .rel_x(scaled_x - 32 * 6),
+        .rel_y(scaled_y / 2),
+        .letter(pp_note),
+        .is_second_char(0),
+        .is_pixel_on(cell7_is_pixel_on)
+    );
+    letter_box cell8(
+        .in_region(scaled_x >= 32 * 7 && scaled_x <= 32 * 7 && is_y_in_region),
+        .rel_x(scaled_x - 32 * 7),
+        .rel_y(scaled_y / 2),
+        .letter(pp_note),
+        .is_second_char(1),
+        .is_pixel_on(cell8_is_pixel_on)
+    );
+
+
+
+    assign is_pixel_on = in_region & (cell1_is_pixel_on | cell2_is_pixel_on | cell4_is_pixel_on | cell5_is_pixel_on | cell7_is_pixel_on | cell8_is_pixel_on);
+endmodule

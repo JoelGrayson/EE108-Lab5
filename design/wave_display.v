@@ -6,6 +6,10 @@
 `define WIDTH 11'd800 // X from 88 to 888. Using 256*3 = 768
 `define HEIGHT 10'd480 // Y from 32 to 32+480=512
 
+`define WAVE_START_Y (`INIT_Y + (`HEIGHT / 2'd2) + 15 + 10)
+`define WAVE_END_Y `WAVE_START_Y + `HEIGHT
+`define MIDDLE_X `INIT_X + (`WIDTH / 2)
+
 module wave_display (
     input clk,
     input reset,
@@ -69,11 +73,37 @@ module wave_display (
         // curr_y < y < p_y - wave going down
         (curr_y <= y_scaled && y_scaled <= p_y);
     wire is_x_beyond_artifact = !(is_x_in_region & read_address < 2'd2); //valid & first two x. used to chop off the beginning
-    assign valid_pixel = is_y_in_region //in top half of screen
+    wire wave_is_pixel_on = is_y_in_region //in top half of screen
                          & is_x_in_region //in quadrant 1 or 2 x-wise
                          & is_y_in_wave
                          & valid
                          & is_x_beyond_artifact;
     assign { r, g, b } = `WHITE; //rgb will be blacked out if valid_pixel is false by the wave_display_top module
 //     // END (4)
+
+    wire ntd_is_pixel_on;
+    // BEGIN note_text_display stuff
+    note_text_display ntd(
+        .clk(clk),
+        .reset(reset),
+        .x_scaled(x - (`MIDDLE_X - 128)),
+        .y_scaled(),
+        .curr_y(y - `WAVE_START_Y),
+        .in_region(
+            // y is in the bottom half of the screen
+            y >= `WAVE_START_Y
+            && y <= `WAVE_END_Y
+            // x is 255 in the center of the screen
+            && x >= (`MIDDLE_X - 128)
+            && x <= (`MIDDLE_X + 127)
+        ),
+
+        .is_pixel_on(ntd_is_pixel_on)
+    );
+    
+    
+    // END note_text_display stuff
+
+
+    assign valid_pixel = wave_is_pixel_on | ntd_is_pixel_on;
 endmodule
