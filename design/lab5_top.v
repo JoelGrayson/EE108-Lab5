@@ -116,6 +116,7 @@ module lab5_top(
 //      The music player
 //  ****************************************************************************
 //       
+    wire [5:0] curr_note;
     wire new_frame, new_frame_1;
     wire [15:0] codec_sample, flopped_sample;
     wire new_sample, flopped_new_sample;
@@ -126,7 +127,8 @@ module lab5_top(
         .next_button(next),
         .new_frame(new_frame_1), 
         .sample_out(codec_sample),
-        .new_sample_generated(new_sample)
+        .new_sample_generated(new_sample),
+        .curr_note(curr_note)
     );
     dff #(.WIDTH(17)) sample_reg (
         .clk(clk_100),
@@ -223,9 +225,10 @@ module lab5_top(
         //.valid(valid),
 		.valid(vde),
 		.vsync(vsync),
+        .curr_note(curr_note)
 		.r(r_1),
 		.g(g_1),
-		.b(b_1)
+		.b(b_1),
     );
     
     assign r = r_1[7:4];

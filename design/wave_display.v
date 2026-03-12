@@ -7,7 +7,7 @@
 `define HEIGHT 10'd480 // Y from 32 to 32+480=512
 
 `define WAVE_START_Y (`INIT_Y + (`HEIGHT / 2'd2) + 15 + 10)
-`define WAVE_END_Y `WAVE_START_Y + `HEIGHT
+`define WAVE_END_Y `WAVE_START_Y + 256
 `define MIDDLE_X `INIT_X + (`WIDTH / 2)
 
 module wave_display (
@@ -18,6 +18,7 @@ module wave_display (
     input valid,
     input [7:0] read_value,
     input read_index,
+    input wire [5:0] curr_note,
     output wire [8:0] read_address,
     output wire valid_pixel,
     output wire [7:0] r,
@@ -87,8 +88,8 @@ module wave_display (
         .clk(clk),
         .reset(reset),
         .x_scaled(x - (`MIDDLE_X - 128)),
-        .y_scaled(),
-        .curr_y(y - `WAVE_START_Y),
+        .y_scaled(y - `WAVE_START_Y),
+        .curr_y(curr_y), //read_value AKA curr_y (from RAM)
         .in_region(
             // y is in the bottom half of the screen
             y >= `WAVE_START_Y
@@ -97,6 +98,7 @@ module wave_display (
             && x >= (`MIDDLE_X - 128)
             && x <= (`MIDDLE_X + 127)
         ),
+        .curr_note(curr_note),
 
         .is_pixel_on(ntd_is_pixel_on)
     );

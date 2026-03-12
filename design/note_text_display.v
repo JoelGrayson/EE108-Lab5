@@ -5,11 +5,12 @@ module note_text_display(
     input wire [7:0] y_scaled, //0 to 255
     input wire [7:0] curr_y, //from the RAM
     input wire in_region, //bool indicating that in the region. When false, the y_scaled value can't be trusted
+    input wire [5:0] curr_note,
 
     output wire is_pixel_on
 );
     // BEGIN (1) curr_note_letter, p_note_letter, pp_note_letter
-    wire [3:0] curr_note_letter = (curr_y % 12) + 1; //so that 0 is nothing. A is 1.
+    wire [3:0] curr_note_letter = (curr_note % 12) + 1; //so that 0 is nothing. A is 1.
     wire [3:0] temp_p_note_letter, p_note_letter, pp_note_letter /*anteprevious*/;
     dffr #(4) temp_p_note_letter_dff(
         .d(curr_note_letter),
@@ -44,7 +45,7 @@ module note_text_display(
         .in_region(scaled_x >= 32 * 0 && scaled_x <= 32 * 1 && is_y_in_region),
         .rel_x(scaled_x),
         .rel_y(scaled_y / 2),
-        .letter(curr_note),
+        .letter(pp_note),
         .is_second_char(0),
         .is_pixel_on(cell1_is_pixel_on)
     );
@@ -52,7 +53,7 @@ module note_text_display(
         .in_region(scaled_x >= 32 * 1 && scaled_x <= 32 * 2 && is_y_in_region),
         .rel_x(scaled_x - 32 * 1),
         .rel_y(scaled_y / 2),
-        .letter(curr_note),
+        .letter(pp_note_letter),
         .is_second_char(1),
         .is_pixel_on(cell2_is_pixel_on)
     );
@@ -61,7 +62,7 @@ module note_text_display(
         .in_region(scaled_x >= 32 * 3 && scaled_x <= 32 * 3 && is_y_in_region),
         .rel_x(scaled_x - 32 * 3),
         .rel_y(scaled_y / 2),
-        .letter(p_note),
+        .letter(p_note_letter),
         .is_second_char(0),
         .is_pixel_on(cell4_is_pixel_on)
     );
@@ -69,7 +70,7 @@ module note_text_display(
         .in_region(scaled_x >= 32 * 4 && scaled_x <= 32 * 4 && is_y_in_region),
         .rel_x(scaled_x - 32 * 4),
         .rel_y(scaled_y / 2),
-        .letter(p_note),
+        .letter(p_note_letter),
         .is_second_char(1),
         .is_pixel_on(cell5_is_pixel_on)
     );
@@ -78,7 +79,7 @@ module note_text_display(
         .in_region(scaled_x >= 32 * 6 && scaled_x <= 32 * 6 && is_y_in_region),
         .rel_x(scaled_x - 32 * 6),
         .rel_y(scaled_y / 2),
-        .letter(pp_note),
+        .letter(curr_note_letter),
         .is_second_char(0),
         .is_pixel_on(cell7_is_pixel_on)
     );
@@ -86,12 +87,10 @@ module note_text_display(
         .in_region(scaled_x >= 32 * 7 && scaled_x <= 32 * 7 && is_y_in_region),
         .rel_x(scaled_x - 32 * 7),
         .rel_y(scaled_y / 2),
-        .letter(pp_note),
+        .letter(curr_note_letter),
         .is_second_char(1),
         .is_pixel_on(cell8_is_pixel_on)
     );
-
-
 
     assign is_pixel_on = in_region & (cell1_is_pixel_on | cell2_is_pixel_on | cell4_is_pixel_on | cell5_is_pixel_on | cell7_is_pixel_on | cell8_is_pixel_on);
 endmodule

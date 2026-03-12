@@ -23,7 +23,9 @@ module music_player(
 
     // Our final output sample to the codec. This needs to be synced to
     // new_frame.
-    output wire [15:0] sample_out
+    output wire [15:0] sample_out,
+
+    output wire [5:0] curr_note
 );
     // The BEAT_COUNT is parameterized so you can reduce this in simulation.
     // If you reduce this to 100 your simulation will be 10x faster.
@@ -67,6 +69,7 @@ module music_player(
 //
     wire [5:0] note_to_play;
     wire [5:0] duration_for_note;
+    assign curr_note = note_to_play;
     wire new_note;
     wire note_done;
     song_reader song_reader(
