@@ -19,7 +19,7 @@ module keyboard_signal_receiver(
     wire [2:0] state; //current state. 100 is IDLE, 010 is SAVING_INPUT, and 001 is TRANSMIT_KEY
     reg [2:0] next_state;
 
-    dff #(STATE_WIDTH) state_dff(
+    dff #(`STATE_WIDTH) state_dff(
         .clk(clk),
         .d(reset ? `DEFAULT_STATE : next_state),
         .q(state)
@@ -33,7 +33,7 @@ module keyboard_signal_receiver(
     // When ps2_clk goes up, this should increment if in the SAVING_INPUT state
     always @(*) begin
         casex ({p_ps2_clk, ps2_clk, state})
-            {1'b0, 1'b1, `SAVING_INPUT_STATE}: next_read_bit_index = read_index + 1; //clock rose in the saving_input state
+            {1'b0, 1'b1, `SAVING_INPUT_STATE}: next_read_bit_index = read_bit_index + 1; //clock rose in the saving_input state
             default: next_read_bit_index = 0;
         endcase
     end
@@ -47,7 +47,6 @@ module keyboard_signal_receiver(
 
     // 11 bit key sequence
     // The data from the PS/2. Comes in 11 bit packet.
-    wire [10:0] key_code; //11 bits from the PS/2 data cable on each clock rise. It is the PS/2 seq. The 1:8 are the actual key information that differs.
     reg [10:0] next_key_code;
     dffr #(11) ps2_seq_dff(
         .d(next_key_code),
@@ -83,7 +82,7 @@ module keyboard_signal_receiver(
     // Calculate the next key_code. Should be if in IDLE_STATE changing based on read_bit_index
     always @(*) begin
         casex ({state, ps2_clk, p_ps2_clk})
-            {`SAVING_INPUT, 1'b0, 1'b1}: next_key_code = key_code | (1'b1 << read_bit_index);
+            {`SAVING_INPUT_STATE, 1'b0, 1'b1}: next_key_code = key_code | (1'b1 << read_bit_index);
             default: next_key_code = key_code;
         endcase
     end
