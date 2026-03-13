@@ -127,14 +127,18 @@ module lab5_top(
     wire [15:0] codec_sample, flopped_sample;
     wire new_sample, flopped_new_sample;
     music_player #(.BEAT_COUNT(BEAT_COUNT)) music_player(
-        .clk(clk_100),
+        .clk(clk_100), //same clk that the oscilloscope used, which is confirmed to work
         .reset(reset),
         .play_button(play),
         .next_button(next),
         .new_frame(new_frame_1), 
         .sample_out(codec_sample),
         .new_sample_generated(new_sample),
-        .curr_note(curr_note)
+        .curr_note(curr_note),
+
+        // Added to pass to keyboard_signal_receiver
+        .ps2_clk(ps2_clk),
+        .ps2_data(ps2_data)
     );
     dff #(.WIDTH(17)) sample_reg (
         .clk(clk_100),
@@ -261,18 +265,9 @@ module lab5_top(
         .TMDS_DATA_P(TMDS_Data_p),
         .TMDS_DATA_N(TMDS_Data_n)
     );
-   
-
-    // Oscilloscope
-    oscilloscope osc (
-        .clk(clk_100), //fpga clk
-        .reset(reset),
-        .ps2_clk(ps2_clk), //pmod
-        .ps2_data(ps2_data)
-    );
     
-    
-    ila_0 my_ila_for_debugging_ps2 (
+    // Shows what the oscilloscope would have read
+    ila_0 oscilloscope_reader ( //my_ila_for_debugging_ps2
         .clk(clk_100), // input wire clk
         .probe0(ps2_clk), // input wire [0:0]  probe0  
         .probe1(ps2_data), // input wire [0:0]  probe1 

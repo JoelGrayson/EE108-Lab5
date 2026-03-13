@@ -18,7 +18,12 @@ module song_reader(
     output [5:0] note, //note and duration from song_rom
     output [5:0] duration,
     
-    output new_note //one-cycle pulse for note_player to remember note & duration and start playing
+    output new_note, //one-cycle pulse for note_player to remember note & duration and start playing
+
+
+    // For the keyboard to override and send its own note
+    input wire ps2_clk,
+    input wire ps2_data
 );
     // DFF storing current_state
     wire [`STATE_WIDTH-1:0] current_state;
@@ -94,5 +99,22 @@ module song_reader(
     assign new_note = current_state == `PLAY_NOTE_STATE; //only lasts one cycle
     assign note = current_state == `PLAY_NOTE_STATE ? note_data_note : `REST_NOTE; //TODO: see if this is necessary or if I can just do assign . = note_data_note
     assign duration = current_state == `PLAY_NOTE_STATE ? note_data_duration : `REST_DURATION; // "
+
+
+
+
+    // Keyboard overwrites the existing signals
+    wire new_key;
+    wire [11:0] key_code;
+
+    keyboard_signal_receiver ksr(
+        .clk(clk), //same as clk_100
+        .reset(reset),
+        .ps2_clk(ps2_clk),
+        .ps2_data(ps2_data),
+
+        .new_key(new_key),
+        .key_code(key_code)
+    );
 endmodule
 

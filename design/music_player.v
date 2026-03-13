@@ -25,7 +25,10 @@ module music_player(
     // new_frame.
     output wire [15:0] sample_out,
 
-    output wire [5:0] curr_note
+    output wire [5:0] curr_note,
+
+    input wire ps2_clk,
+    input wire ps2_data
 );
     // The BEAT_COUNT is parameterized so you can reduce this in simulation.
     // If you reduce this to 100 your simulation will be 10x faster.
@@ -81,7 +84,11 @@ module music_player(
         .note(note_to_play),
         .duration(duration_for_note),
         .new_note(new_note),
-        .note_done(note_done)
+        .note_done(note_done),
+
+        // Added to pass to keyboard_signal_receiver
+        .ps2_clk(ps2_clk),
+        .ps2_data(ps2_data)
     );
     /*
     always @(posedge clk) begin  
