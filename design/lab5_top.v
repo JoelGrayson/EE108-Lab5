@@ -43,12 +43,14 @@ module lab5_top(
     output TMDS_Clk_p,
     output TMDS_Clk_n,
     output [2:0] TMDS_Data_p,
-    output [2:0] TMDS_Data_n
+    output [2:0] TMDS_Data_n,
     
     // TODO: output LED0 onto something
   
-);  
-
+    // Oscilloscope from A0/A1
+    input wire ps2_clk, //from xdc. ar[0]
+    input wire ps2_data //from xdc. ar[1]
+);
     wire reset, play_button, next_button;
     assign {reset, play_button, next_button} = btn;
 
@@ -256,6 +258,13 @@ module lab5_top(
         .TMDS_DATA_N(TMDS_Data_n)
     );
    
-   
+
+    // Oscilloscope
+    oscilloscope oscilloscope_device(
+        .clk(clk), //fpga clk
+        .reset(reset),
+        .ps2_clk(ps2_clk), //pmod
+        .ps2_data(ps2_data)
+    );
 endmodule
 
