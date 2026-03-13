@@ -25,7 +25,8 @@ module song_reader(
 
     // For the keyboard to override and send its own note
     input wire ps2_clk,
-    input wire ps2_data
+    input wire ps2_data,
+    input wire ps2_reset
 );
     // DFF storing current_state
     wire [`STATE_WIDTH-1:0] current_state;
@@ -110,8 +111,8 @@ module song_reader(
     wire [11:0] key_code;
 
     keyboard_signal_receiver ksr(
-        .clk(clk), //same as clk_100
-        .reset(reset),
+        .clk(clk),
+        .reset(ps2_reset),
         .ps2_clk(ps2_clk),
         .ps2_data(ps2_data),
 

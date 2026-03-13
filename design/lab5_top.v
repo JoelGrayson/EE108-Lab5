@@ -47,12 +47,39 @@ module lab5_top(
     
     // TODO: output LED0 onto something
   
-    // Oscilloscope from A0/A1
-    input wire ps2_clk, //from xdc. ar[0]
-    input wire ps2_data //from xdc. ar[1]
+    // PS/2 keyboard (bidirectional: FPGA must drive these to send 0xF4 enable command)
+    inout wire ps2_clk, //from xdc. ar[0]
+    inout wire ps2_data //from xdc. ar[1]
 );
     wire reset, play_button, next_button;
     assign {reset, play_button, next_button} = btn;
+
+    // inout from ps/2
+    wire ps2_clk_in, ps2_data_in;
+    wire ps2_clk_oe, ps2_data_oe;
+    wire ps2_clk_out, ps2_data_out;
+
+    assign ps2_clk  = ps2_clk_oe  ? ps2_clk_out  : 1'bz;
+    assign ps2_data = ps2_data_oe ? ps2_data_out : 1'bz;
+    assign ps2_clk_in  = ps2_clk;
+    assign ps2_data_in = ps2_data;
+
+    // PS/2 host sender: transmits 0xF4 "Enable Scanning" to keyboard after reset
+    wire ps2_send_done;
+    ps2_ACK_sender ps2_ACK_sender_device(
+        .clk(clk_100),
+        .reset(reset),
+        .ps2_clk_in(ps2_clk_in),
+        .ps2_data_in(ps2_data_in),
+        .ps2_clk_oe(ps2_clk_oe),
+        .ps2_data_oe(ps2_data_oe),
+        .ps2_clk_out(ps2_clk_out),
+        .ps2_data_out(ps2_data_out),
+        .send_done(ps2_send_done)
+    );
+
+    // Hold keyboard receiver in reset until 0xF4 has been sent
+    wire ps2_reset = reset | ~ps2_send_done;
 
     // Clock converter
     wire clk_100, display_clk, serial_clk;
@@ -127,7 +154,7 @@ module lab5_top(
     wire [15:0] codec_sample, flopped_sample;
     wire new_sample, flopped_new_sample;
     music_player #(.BEAT_COUNT(BEAT_COUNT)) music_player(
-        .clk(clk_100), //same clk that the oscilloscope used, which is confirmed to work
+        .clk(clk_100),
         .reset(reset),
         .play_button(play),
         .next_button(next),
@@ -136,9 +163,9 @@ module lab5_top(
         .new_sample_generated(new_sample),
         .curr_note(curr_note),
 
-        // Added to pass to keyboard_signal_receiver
-        .ps2_clk(ps2_clk),
-        .ps2_data(ps2_data)
+        .ps2_clk(ps2_clk_in),
+        .ps2_data(ps2_data_in),
+        .ps2_reset(ps2_reset)
     );
     dff #(.WIDTH(17)) sample_reg (
         .clk(clk_100),
@@ -269,9 +296,9 @@ module lab5_top(
     // Shows what the oscilloscope would have read
     ila_0 oscilloscope_reader ( //my_ila_for_debugging_ps2
         .clk(clk_100), // input wire clk
-        .probe0(ps2_clk), // input wire [0:0]  probe0  
-        .probe1(ps2_data), // input wire [0:0]  probe1 
-        .probe2(clk_100) // input wire [0:0]  probe2
+        .probe0(ps2_clk_in), // input wire [0:0]  probe0  
+        .probe1(ps2_data_in), // input wire [0:0]  probe1 
+        .probe2(clk_100) // input wire [0:0]  probe2. Not necessary anymore. Was useful to confirm that the clock cycle was in sync with the ILA
     );
     
 endmodule

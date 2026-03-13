@@ -18,25 +18,25 @@ module keyboard_signal_rom(
     // Only use make codes to start playing a note
     always @(*) begin
         casex (keyboard_signal) //don't care what first bit (start bit) and last bit (stop bit) are. Only care about the middle 8 bits. Parity is not checked here.
-            11'bx: //TODO: measure the Perixx keyboard to find out what the values are here
+            11'bx00000000xx: //TODO: measure the Perixx keyboard to find out what the values are here
                 keyboard_note = `REST_NOTE;
-            11'b00000000000: //A
+            11'bx00000000xx: //A
                 keyboard_note = `A_NOTE;
-            11'b00000000001: //S
+            11'bx00000000xx: //S
                 keyboard_note = `S_NOTE;
-            11'b00000000010: //D
+            11'bx00000000xx: //D
                 keyboard_note = `D_NOTE;
-            11'b00000000100: //F
+            11'bx00000000xx: //F
                 keyboard_note = `F_NOTE;
-            11'b00000000101: //G
+            11'bx00000000xx: //G
                 keyboard_note = `G_NOTE;
-            11'b00000000110: //H
+            11'bx00000000xx: //H
                 keyboard_note = `H_NOTE; // H_NOTE (assign the key code as appropriate if you wish to define `H_NOTE`)
-            11'b00000000111: //J
+            11'bx00000000xx: //J
                 keyboard_note = `J_NOTE; // J_NOTE
-            11'b00000001000: //K
+            11'bx00000000xx: //K
                 keyboard_note = `K_NOTE; // K_NOTE
-            11'b00000001001: //L
+            11'bx00000000xx: //L
                 keyboard_note = `L_NOTE; // L_NOTE
             
             default: keyboard_note = `REST_NOTE;
