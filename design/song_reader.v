@@ -3,7 +3,7 @@
 `define REST_NOTE 6'b0
 `define REST_DURATION 6'b0
 
-`define KEYBOARD_NOTE_DURATION 5'd16
+`define KEYBOARD_NOTE_DURATION 6'd16
 
 module song_reader(
     input clk,
@@ -133,5 +133,12 @@ module song_reader(
     assign new_note = new_key | sr_new_note;
     assign note = new_key ? keyboard_note : sr_note; //keyboard has higher priority over song reader
     assign duration = new_key ? `KEYBOARD_NOTE_DURATION : sr_duration;
+
+
+    ila_1 key_code_reader (
+	    .clk(clk), // input wire clk
+        .probe0(keyboard_note) // input wire [5:0] probe0
+    );
+    
 endmodule
 
