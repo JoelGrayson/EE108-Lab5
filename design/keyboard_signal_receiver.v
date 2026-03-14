@@ -3,6 +3,9 @@
 `define SAVING_INPUT_STATE 3'b010 //uses read_bit_index
 `define TRANSMIT_KEY_STATE 3'b001
 `define DEFAULT_STATE `IDLE_STATE
+`define NUMBER_OF_CLK100_CYCLES_IN_A_PS2_CLK_CYCLE 8000 //was close to 8200
+`define CYCLE_TIMEOUT 3*`NUMBER_OF_CLK100_CYCLES_IN_A_PS2_CLK_CYCLE //3*8000 is 24,000 which fits in 16 bits
+
 
 module keyboard_signal_receiver(
     input wire clk,
@@ -71,12 +74,13 @@ module keyboard_signal_receiver(
 
     // Compute next state
     always @(*) begin
-        casex ({state,            p_ps2_clk, ps2_clk, read_bit_index})
+        casex ({state,            p_ps2_clk, ps2_clk, read_bit_index, reset_to_idle_flag})
+            {3'bx,                1'bx,      1'bx,   {4{1'bx}}, 1'b1 }: next_state = `IDLE_STATE;
             // The following lines are about advancing the state (incrementing). Otherwise, it stays at the same state because of the default case
-            {`IDLE_STATE,         1'b1,      1'b0,   {4{1'bx}} }: next_state = `SAVING_INPUT_STATE;
+            {`IDLE_STATE,         1'b1,      1'b0,   {4{1'bx}}, 1'b0 }: next_state = `SAVING_INPUT_STATE;
                 // in IDLE state but the clk just went down so now it's time for capture
-            {`SAVING_INPUT_STATE, 1'bx,      1'bx,   4'd11}: next_state = `TRANSMIT_KEY_STATE; //once at the 11th signal, all signals have been read so it's time to transmit the key
-            {`TRANSMIT_KEY_STATE, 1'bx,      1'bx,   {4{1'bx}} }: next_state = `IDLE_STATE; //only for one cycle does it need to pulse to show the key
+            {`SAVING_INPUT_STATE, 1'bx,      1'bx,   4'd11,     1'b0}: next_state = `TRANSMIT_KEY_STATE; //once at the 11th signal, all signals have been read so it's time to transmit the key
+            {`TRANSMIT_KEY_STATE, 1'bx,      1'bx,   {4{1'bx}}, 1'b0 }: next_state = `IDLE_STATE; //only for one cycle does it need to pulse to show the key
             default: next_state = state;
         endcase
     end
@@ -105,5 +109,20 @@ module keyboard_signal_receiver(
     
     // new_key
     assign new_key = state == `TRANSMIT_KEY_STATE;
+
+
+
+    // 3/14/26-3:50pm feature to prevent getting stuck in SAVING_INPUT_STATE
+    wire [15:0] next_cycles_since_read_bit_index_changed = read_bit_index != next_read_bit_index
+        ? 16'b0 //a change is happening
+        : cycles_since_read_bit_index_changed + 16'b1;
+    wire [15:0] cycles_since_read_bit_index_changed;
+    wire reset_to_idle_flag = cycles_since_read_bit_index_changed > `CYCLE_TIMEOUT; //a boolean
+    dff #(16) cycles_since_read_bit_index_changed_dff(
+        .clk(clk),
+        .d(next_cycles_since_read_bit_index_changed),
+        .q(cycles_since_read_bit_index_changed)
+    );
+    
 endmodule
 
