@@ -54,6 +54,19 @@ module lab5_top(
     wire reset, play_button, next_button;
     assign {reset, play_button, next_button} = btn;
 
+    // Clock converter
+    wire clk_100, display_clk, serial_clk;
+    wire LED0;      // TODO: assign this to a real LED
+ 
+    clk_wiz_0 U2 (
+        .clk_out1(clk_100),     // 100 MHz
+        .clk_out2(display_clk),	// 30 MHz
+        .clk_out3(serial_clk),	// 150 Mhz
+        .reset(reset),
+        .locked(LED0),
+        .clk_in1(sysclk)
+    );
+    
     // inout from ps/2
     wire ps2_clk_in, ps2_data_in;
     wire ps2_clk_oe, ps2_data_oe;
@@ -81,19 +94,6 @@ module lab5_top(
     // Hold keyboard receiver in reset until 0xF4 has been sent
     wire ps2_reset = reset | ~ps2_send_done;
 
-    // Clock converter
-    wire clk_100, display_clk, serial_clk;
-    wire LED0;      // TODO: assign this to a real LED
- 
-    clk_wiz_0 U2 (
-        .clk_out1(clk_100),     // 100 MHz
-        .clk_out2(display_clk),	// 30 MHz
-        .clk_out3(serial_clk),	// 150 Mhz
-        .reset(reset),
-        .locked(LED0),
-        .clk_in1(sysclk)
-    );
-    
     
     
     
@@ -292,14 +292,5 @@ module lab5_top(
         .TMDS_DATA_P(TMDS_Data_p),
         .TMDS_DATA_N(TMDS_Data_n)
     );
-    
-    // Shows what the oscilloscope would have read
-    ila_0 oscilloscope_reader ( //my_ila_for_debugging_ps2
-        .clk(clk_100), // input wire clk
-        .probe0(ps2_clk_in), // input wire [0:0]  probe0  
-        .probe1(ps2_data_in), // input wire [0:0]  probe1 
-        .probe2(clk_100) // input wire [0:0]  probe2. Not necessary anymore. Was useful to confirm that the clock cycle was in sync with the ILA
-    );
-    
 endmodule
 

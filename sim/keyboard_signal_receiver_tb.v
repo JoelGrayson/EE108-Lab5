@@ -1,0 +1,92 @@
+module keyboard_signal_receiver_tb;
+    reg clk, reset;
+
+    reg ps2_clk;
+    reg ps2_data;
+    wire new_key;
+    wire [11:0] key_code;
+
+    // Reset and clk
+    initial begin
+        clk = 1'b0;
+        reset = 1'b1;
+        repeat (4) #5 clk = ~clk;
+        reset = 1'b0;
+        forever clk = ~clk;
+    end
+
+    keyboard_signal_receiver dut(
+        .clk(clk),
+        .reset(reset),
+        .ps2_clk(ps2_clk),
+        .ps2_data(ps2_data),
+
+        // Outputs
+        .new_key(new_key),
+        .key_code(key_code)
+    );
+
+
+    initial begin
+        // Line starts idle
+        ps2_clk = 1'b1;
+        ps2_data = 1'b1;
+        #10_000;
+
+        // Inspired by the key S press
+        // It takes 4000 clock cycles for PS2_clk to toggle
+
+        // Pull down the data before pulling down clk (because of the setup time delay of the data)
+        ps2_data = 1'b0;
+        #1000;
+        ps2_clk = 1'b0; //A
+
+        #4000;
+        ps2_clk = 1'b1; //ck1
+        #1000;
+        ps2_data = 1'b1; //B
+        #3000;
+        ps2_clk = 1'b0;
+        #4000;
+        ps2_clk = 1'b1; //C. ck2
+        #4000;
+        ps2_clk = 1'b0;
+        #4000;
+        ps2_clk = 1'b1; //ck3
+
+        #1000;
+        ps2_data = 1'b0;
+        #3000;
+        ps2_clk = 1'b0;
+        #4000;
+        ps2_clk = 1'b1; //ck4
+        #1000 ps2_data = 1'b1;
+        #3000 ps2_clk = 1'b0;
+        #4000 ps2_clk = 1'b1; //ck5
+        #4000 ps2_clk = 1'b0;
+        #4000 ps2_clk = 1'b1; //ck6
+        #1000 ps2_data = 1'b0;
+        #3000 ps2_clk = 1'b0;
+        #4000 ps2_clk = 1'b1; //ck7
+
+        #4000 ps2_clk = 1'b0;
+        #4000 ps2_clk = 1'b1; //ck8
+        #4000 ps2_clk = 1'b0;
+        #4000 ps2_clk = 1'b1; //ck9
+
+        #1000 ps2_data = 1'b1;
+        #3000 ps2_clk = 1'b0;
+
+        #4000 ps2_clk = 1'b1; //ck10
+        #4000 ps2_clk = 1'b0;
+        #4000 ps2_clk = 1'b1; //ck11
+
+        // That's it. Now they stay idle
+        
+        #10_000;
+
+        $finish;
+    end
+
+endmodule
+
