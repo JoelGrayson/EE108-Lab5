@@ -21,7 +21,10 @@ module keyboard_signal_receiver(
         .clk(clk), // input wire clk (clk100)
         .probe0(ps2_clk), // input wire [0:0]  probe0  
         .probe1(ps2_data), // input wire [0:0]  probe1 
-        .probe2(clk) // input wire [0:0]  probe2. Not necessary anymore. Was useful to confirm that the clock cycle was in sync with the ILA
+        .probe2(state), // input wire [2:0]  probe2 
+        .probe3(key_code), // input wire [10:0]  probe3 
+        .probe4(read_index), // input wire [3:0]  probe4 
+        .probe5(new_key) // input wire [0:0]  probe5
     );
 
 

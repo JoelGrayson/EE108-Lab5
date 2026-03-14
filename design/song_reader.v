@@ -144,6 +144,5 @@ module song_reader(
         .probe1(new_key), // input wire [0:0]  probe1
     	.probe2(key_code) //input wire [10:0]  probe2
     );
-    
 endmodule
 

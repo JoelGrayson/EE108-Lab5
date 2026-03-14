@@ -17,5 +17,5 @@ wave_display is for the full screen
 ## ILAs
 * oscilloscope_ila (ila_0) - reads the raw ps2_clk and data signals coming from the keyboard
 * key_code_ila (ila_1) - reads the keyboard code coming from the keyboard_signal_receiver and the keyboard note that is played (from keyboard_signal_rom)
-
+    * keyboard_note, new_key, and key_code
 
