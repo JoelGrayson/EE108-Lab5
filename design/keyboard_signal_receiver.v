@@ -70,10 +70,10 @@ module keyboard_signal_receiver(
     always @(*) begin
         casex ({state, p_ps2_clk, ps2_clk, read_bit_index})
             // The following lines are about advancing the state (incrementing). Otherwise, it stays at the same state because of the default case
-            {`IDLE_STATE, 1'b1, 1'b0, 4'bx}: next_state = `SAVING_INPUT_STATE;
+            {`IDLE_STATE, 1'b1, 1'b0, {4{1'bx}} }: next_state = `SAVING_INPUT_STATE;
                 // in IDLE state but the clk just went down so now it's time for capture
             {`SAVING_INPUT_STATE, 1'bx, 1'bx, 4'd11}: next_state = `TRANSMIT_KEY_STATE;
-            {`TRANSMIT_KEY_STATE, 1'bx, 1'bx, 1'bx}: next_state = `IDLE_STATE; //only for one cycle does it need to pulse to show the key
+            {`TRANSMIT_KEY_STATE, 1'bx, 1'bx, {4{1'bx}} }: next_state = `IDLE_STATE; //only for one cycle does it need to pulse to show the key
             default: next_state = state;
         endcase
     end

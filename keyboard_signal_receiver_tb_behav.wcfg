@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="keyboard_signal_receiver_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="keyboard_signal_receiver_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="9.241573 us"></ZoomStartTime>
+      <ZoomEndTime time="114.241574 us"></ZoomEndTime>
+      <Cursor1Time time="96.741573 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="318"></NameColumnWidth>
+      <ValueColumnWidth column_width="136"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="18" />
+   <wvobject fp_name="/keyboard_signal_receiver_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/ps2_clk" type="logic">
+      <obj_property name="ElementShortName">ps2_clk</obj_property>
+      <obj_property name="ObjectShortName">ps2_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/ps2_data" type="logic">
+      <obj_property name="ElementShortName">ps2_data</obj_property>
+      <obj_property name="ObjectShortName">ps2_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/new_key" type="logic">
+      <obj_property name="ElementShortName">new_key</obj_property>
+      <obj_property name="ObjectShortName">new_key</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/key_code" type="array">
+      <obj_property name="ElementShortName">key_code[10:0]</obj_property>
+      <obj_property name="ObjectShortName">key_code[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/ps2_clk" type="logic">
+      <obj_property name="ElementShortName">ps2_clk</obj_property>
+      <obj_property name="ObjectShortName">ps2_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/ps2_data" type="logic">
+      <obj_property name="ElementShortName">ps2_data</obj_property>
+      <obj_property name="ObjectShortName">ps2_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/new_key" type="logic">
+      <obj_property name="ElementShortName">new_key</obj_property>
+      <obj_property name="ObjectShortName">new_key</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/key_code" type="array">
+      <obj_property name="ElementShortName">key_code[10:0]</obj_property>
+      <obj_property name="ObjectShortName">key_code[10:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/p_ps2_clk" type="logic">
+      <obj_property name="ElementShortName">p_ps2_clk</obj_property>
+      <obj_property name="ObjectShortName">p_ps2_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/state" type="array">
+      <obj_property name="ElementShortName">state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/next_state" type="array">
+      <obj_property name="ElementShortName">next_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/read_bit_index" type="array">
+      <obj_property name="ElementShortName">read_bit_index[3:0]</obj_property>
+      <obj_property name="ObjectShortName">read_bit_index[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/next_read_bit_index" type="array">
+      <obj_property name="ElementShortName">next_read_bit_index[3:0]</obj_property>
+      <obj_property name="ObjectShortName">next_read_bit_index[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/keyboard_signal_receiver_tb/dut/next_key_code" type="array">
+      <obj_property name="ElementShortName">next_key_code[10:0]</obj_property>
+      <obj_property name="ObjectShortName">next_key_code[10:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+</wave_config>
