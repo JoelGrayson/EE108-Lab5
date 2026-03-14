@@ -108,7 +108,7 @@ module song_reader(
 
     // Keyboard overwrites the existing signals
     wire new_key;
-    wire [11:0] key_code;
+    wire [10:0] key_code;
 
     keyboard_signal_receiver ksr(
         .clk(clk),
@@ -121,9 +121,9 @@ module song_reader(
     );
 
     wire [5:0] keyboard_note;
-    keyboard_signal_rom ks_rom( //case statement mapping the 11 bits keyboard_signal to the keyboard note that can be played
-        .keyboard_signal(ps2_data),
-        .keyboard_note(keyboard_note)
+    keyboard_signal_rom ks_rom( //case statement mapping the 11 bits keyboard_signal to the keyboard note that can be played (just the 6 bits of the note, not the duration)
+        .keyboard_signal(ps2_data), //11 bits input
+        .keyboard_note(keyboard_note)  //6 bits output
     );
 
 

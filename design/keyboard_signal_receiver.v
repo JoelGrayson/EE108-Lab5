@@ -13,7 +13,7 @@ module keyboard_signal_receiver(
     input wire ps2_data,
 
     output wire new_key, //one-pulse indicating new key pressed and new note should be played
-    output wire [11:0] key_code //like the notes in song_rom. This is the 12-bit note that specifies 
+    output wire [10:0] key_code //11 bits
 );
     // Use ILA to record the signal
     // Shows what the oscilloscope would have read
@@ -78,10 +78,9 @@ module keyboard_signal_receiver(
     end
 
 
-    // 12-bit key sequence
     // The data from the PS/2. Comes in 11 bit packet.
-    reg [11:0] next_key_code;
-    dffr #(12) ps2_seq_dff(
+    reg [10:0] next_key_code;
+    dffr #(11) ps2_seq_dff(
         .d(next_key_code),
         .q(key_code),
         .clk(clk),
@@ -103,6 +102,4 @@ module keyboard_signal_receiver(
     // new_key
     assign new_key = state == `TRANSMIT_KEY_STATE;
 endmodule
-
-
 

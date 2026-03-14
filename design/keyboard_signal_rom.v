@@ -12,8 +12,8 @@
 `define REST_NOTE 5'd0 //nothing played
 
 module keyboard_signal_rom(
-    input wire [10:0] keyboard_signal,
-    output reg [5:0] keyboard_note
+    input wire [10:0] keyboard_signal, //11 bit signal
+    output reg [5:0] keyboard_note //note to be played, doesn't include the duration
 );
     // Only use make codes to start playing a note
     always @(*) begin

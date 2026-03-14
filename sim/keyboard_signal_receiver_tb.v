@@ -4,7 +4,7 @@ module keyboard_signal_receiver_tb;
     reg ps2_clk;
     reg ps2_data;
     wire new_key;
-    wire [11:0] key_code;
+    wire [10:0] key_code;
 
     // Reset and clk
     initial begin
