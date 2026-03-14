@@ -12,7 +12,7 @@ module keyboard_signal_receiver_tb;
         reset = 1'b1;
         repeat (4) #5 clk = ~clk;
         reset = 1'b0;
-        forever clk = ~clk;
+        forever #5 clk = ~clk;
     end
 
     keyboard_signal_receiver dut(
@@ -85,7 +85,7 @@ module keyboard_signal_receiver_tb;
         
         #10_000;
 
-        $finish;
+        $stop;
     end
 
 endmodule

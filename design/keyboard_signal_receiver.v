@@ -44,9 +44,9 @@ module keyboard_signal_receiver(
         .d(reset ? `DEFAULT_STATE : next_state),
         .q(state)
     );
-
-
-
+    
+    
+    
     // Number of read bits. 0 to 11
     wire [3:0] read_bit_index; //enough memory for 0 to 16
     reg [3:0] next_read_bit_index;
@@ -65,19 +65,6 @@ module keyboard_signal_receiver(
     );
 
 
-    // 11 bit key sequence
-    // The data from the PS/2. Comes in 11 bit packet.
-    reg [10:0] next_key_code;
-    dffr #(11) ps2_seq_dff(
-        .d(next_key_code),
-        .q(key_code),
-        .clk(clk),
-        .r(reset)
-    );
-
-
-
-    
     // Compute next state
     always @(*) begin
         casex ({state, ps2_clk, p_ps2_clk, read_bit_index})
@@ -91,14 +78,30 @@ module keyboard_signal_receiver(
     end
 
 
+    // 12-bit key sequence
+    // The data from the PS/2. Comes in 11 bit packet.
+    reg [11:0] next_key_code;
+    dffr #(12) ps2_seq_dff(
+        .d(next_key_code),
+        .q(key_code),
+        .clk(clk),
+        .r(reset)
+    );
+
+
     // Calculate the next key_code. Should be if in IDLE_STATE changing based on read_bit_index
     always @(*) begin
-        casex ({state, ps2_clk, p_ps2_clk})
-            {`SAVING_INPUT_STATE, 1'b0, 1'b1}: next_key_code = key_code | (1'b1 << read_bit_index);
+        casex ({reset, state, ps2_clk, p_ps2_clk})
+            {1'b1, { 5{1'bx} } }: next_key_code = 1'b0; //should be 0 when reset
+            {1'b0, `IDLE_STATE, 1'bx, 1'bx}: next_key_code = 1'b0; //should be 0 when idle
+            {1'b0, `SAVING_INPUT_STATE, 1'b0, 1'b1}: next_key_code = key_code | (1'b1 << read_bit_index);
             default: next_key_code = key_code;
         endcase
     end
     
+    
+    // new_key
+    assign new_key = state == `TRANSMIT_KEY_STATE;
 endmodule
 
 
