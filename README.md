@@ -10,7 +10,7 @@ wave_display is for the full screen
 
 
 ### Integration Commands
-`set_property CONTROL.TRIGGER_POSITION 10000 [get_hw_ilas hw_ila_2]` for the ILA to see the full signal. Otherwise, it is center-aligned by default like an oscilloscope, meaning it chops off the right part. This is an easier solution than just increasing the memory since I am worried of running out of BRAM. hw_ila_2 corresponds to the ila_1 in my case.
+`set_property CONTROL.TRIGGER_POSITION 30000 [get_hw_ilas hw_ila_2]` for the ILA to see the full signal. Otherwise, it is center-aligned by default like an oscilloscope, meaning it chops off the right part. This is an easier solution than just increasing the memory since I am worried of running out of BRAM. hw_ila_2 corresponds to the ila_1 in my case.
 
 
 

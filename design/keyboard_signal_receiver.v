@@ -23,7 +23,7 @@ module keyboard_signal_receiver(
         .probe1(ps2_data), // input wire [0:0]  probe1 
         .probe2(state), // input wire [2:0]  probe2 
         .probe3(key_code), // input wire [10:0]  probe3 
-        .probe4(read_index), // input wire [3:0]  probe4 
+        .probe4(read_bit_index), // input wire [3:0]  probe4 
         .probe5(new_key) // input wire [0:0]  probe5
     );
 
@@ -56,9 +56,9 @@ module keyboard_signal_receiver(
     // When ps2_clk goes up, this should increment if in the SAVING_INPUT state
     always @(*) begin
         casex ({p_ps2_clk, ps2_clk, state})
-            {1'b0, 1'b1, `SAVING_INPUT_STATE}: next_read_bit_index = read_bit_index + 1; //clock rose in the saving_input state
+            {1'b0, 1'b1, `SAVING_INPUT_STATE}: next_read_bit_index = read_bit_index + 1'b1; //clock rose in the saving_input state
             {1'bx, 1'bx, `SAVING_INPUT_STATE}: next_read_bit_index = read_bit_index; //otherwise, just keep the next_read_bit the same
-            default: next_read_bit_index = 0;
+            default: next_read_bit_index = 4'b0;
         endcase
     end
     dffr #(4) read_bit_index_dff(
@@ -71,12 +71,12 @@ module keyboard_signal_receiver(
 
     // Compute next state
     always @(*) begin
-        casex ({state, p_ps2_clk, ps2_clk, read_bit_index})
+        casex ({state,            p_ps2_clk, ps2_clk, read_bit_index})
             // The following lines are about advancing the state (incrementing). Otherwise, it stays at the same state because of the default case
-            {`IDLE_STATE, 1'b1, 1'b0, {4{1'bx}} }: next_state = `SAVING_INPUT_STATE;
+            {`IDLE_STATE,         1'b1,      1'b0,   {4{1'bx}} }: next_state = `SAVING_INPUT_STATE;
                 // in IDLE state but the clk just went down so now it's time for capture
-            {`SAVING_INPUT_STATE, 1'bx, 1'bx, 4'd11}: next_state = `TRANSMIT_KEY_STATE;
-            {`TRANSMIT_KEY_STATE, 1'bx, 1'bx, {4{1'bx}} }: next_state = `IDLE_STATE; //only for one cycle does it need to pulse to show the key
+            {`SAVING_INPUT_STATE, 1'bx,      1'bx,   4'd11}: next_state = `TRANSMIT_KEY_STATE; //once at the 11th signal, all signals have been read so it's time to transmit the key
+            {`TRANSMIT_KEY_STATE, 1'bx,      1'bx,   {4{1'bx}} }: next_state = `IDLE_STATE; //only for one cycle does it need to pulse to show the key
             default: next_state = state;
         endcase
     end
