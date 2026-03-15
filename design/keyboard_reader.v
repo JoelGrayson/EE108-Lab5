@@ -55,7 +55,7 @@ module keyboard_reader(
     assign duration = `KEYBOARD_NOTE_DURATION;
 
 
-    // State to set keyboard_play
+    // State to set keyboard_play. Keyboard_play should be set to 1 when new_note_pulse starts and go back to 0 when note_done_pulse occurs
     wire [`KEYBOARD_STATE_WIDTH-1:0] state;
     reg [`KEYBOARD_STATE_WIDTH-1:0] next_state;
     dff #(`KEYBOARD_STATE_WIDTH) keyboard_state(
@@ -65,9 +65,10 @@ module keyboard_reader(
     );
     always @(*) begin
         case ({ state, new_note_pulse, note_done_pulse })
-            { `KEYBOARD_READER_IDLE_STATE, 1'b1, 1'b0 }: next_state = `KEYBOARD_READER_PLAYING_STATE;
-            { `KEYBOARD_READER_PLAYING_STATE, 1'b0, 1'b1 }: next_state = `KEYBOARD_READER_IDLE_STATE;
-            default: next_state = state; //ensure the state stays the same otherwise
+            { `KEYBOARD_READER_IDLE_STATE, 1'b1, 1'b0 }: next_state = `KEYBOARD_READER_PLAYING_STATE; //go from idle to playing when new_note
+            { `KEYBOARD_READER_PLAYING_STATE, 1'b0, 1'b1 }: next_state = `KEYBOARD_READER_IDLE_STATE; //note_done causes back to idle
+            { `KEYBOARD_READER_PLAYING_STATE, 1'bx, 1'bx }: next_state = `KEYBOARD_READER_PLAYING_STATE; //ensure it stays in the same state if not note_done_pulse
+            default: next_state = `DEFAULT_KEYBOARD_STATE; //by default, be in idle
         endcase
     end
 
@@ -79,12 +80,30 @@ module keyboard_reader(
     // keyboard_note (probe 1) is the note we have played from the keyboard_signal_rom
     // probe 2 is helpful for trigger
     // probe 3 is helpful to see what the keyboard said literally from the scope
+//    ila_1 ps2_frame_ila(
+//	    .clk(clk), // input wire clk
+//        .probe0(keyboard_note), // input wire [5:0] probe0
+//        .probe1(new_key), // input wire [0:0]  probe1
+//    	.probe2(ps2_frame), //input wire [10:0]  probe2
+//        .probe3(ps2_key_code) // input wire [7:0]  probe3
+//    );
+    // #0 - keyboard_note, new_key, ps2_frame, #3 - ps2_key_code //this row is OG
+    // #4 - keyboard_play, state, #6 - next_state, #7 - note, duration, #9 - new_note_pulse
+    // #10 - enabled, note_done_pulse
     ila_1 ps2_frame_ila(
-	    .clk(clk), // input wire clk
-        .probe0(keyboard_note), // input wire [5:0] probe0
-        .probe1(new_key), // input wire [0:0]  probe1
-    	.probe2(ps2_frame), //input wire [10:0]  probe2
-        .probe3(ps2_key_code) // input wire [7:0]  probe3
+        .clk(clk), // input wire clk
+        .probe0(keyboard_note), // input wire [5:0]  probe0  
+        .probe1(new_key), // input wire [0:0]  probe1 
+        .probe2(ps2_frame), // input wire [10:0]  probe2 
+        .probe3(ps2_key_code), // input wire [7:0]  probe3 
+        .probe4(keyboard_play), // input wire [0:0]  probe4 
+        .probe5(state), // input wire [1:0]  probe5 
+        .probe6(next_state), // input wire [1:0]  probe6 
+        .probe7(note), // input wire [5:0]  probe7 
+        .probe8(duration), // input wire [5:0]  probe8 
+        .probe9(new_note_pulse), // input wire [0:0]  probe9 
+        .probe10(enabled), // input wire [0:0]  probe10 
+        .probe11(note_done_pulse) // input wire [0:0]  probe11
     );
 endmodule
 
