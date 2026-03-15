@@ -117,7 +117,7 @@ module music_player(
     note_player note_player(
         .clk(clk),
         .reset(reset),
-        .play_enable(play),
+        .play_enable(1'b1), //instead of play, it is always true so the keyboard can always play
         .note_to_load(note_to_play),
         .duration_to_load(duration_for_note),
         .load_new_note(new_note),
