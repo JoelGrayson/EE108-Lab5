@@ -92,7 +92,7 @@ module keyboard_reader(
     // #10 - enabled, note_done_pulse
     ila_1 ps2_frame_ila(
         .clk(clk), // input wire clk
-        .probe0(keyboard_note), // input wire [5:0]  probe0  
+        .probe0(note), // input wire [5:0]  probe0  
         .probe1(new_key), // input wire [0:0]  probe1 
         .probe2(ps2_frame), // input wire [10:0]  probe2 
         .probe3(ps2_key_code), // input wire [7:0]  probe3 
