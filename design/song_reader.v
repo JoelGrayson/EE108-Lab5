@@ -139,12 +139,22 @@ module song_reader(
     // keyboard_note (probe 1) is the note we have played from the keyboard_signal_rom
     // probe 2 is helpful for trigger
     // probe 3 is helpful to see what the keyboard said literally from the scope
-    ila_1 ps2_frame_reader (
+    ila_1 ps2_frame_ila(
 	    .clk(clk), // input wire clk
         .probe0(keyboard_note), // input wire [5:0] probe0
         .probe1(new_key), // input wire [0:0]  probe1
     	.probe2(ps2_frame), //input wire [10:0]  probe2
         .probe3(ps2_key_code) // input wire [7:0]  probe3
+    );
+
+
+    // Create another ILA to measure the output of song_reader. It should have a trigger of new_note (1 bit) and show what note (6 bit) and duration (6 bit) and new_key are for those
+    ila_2 song_reader_ila(
+        .clk(clk), // input wire clk
+        .probe0(new_note), // input wire [0:0]  probe0  
+        .probe1(new_key), // input wire [0:0]  probe1 
+        .probe2(note), // input wire [5:0]  probe2 
+        .probe3(duration) // input wire [5:0]  probe3
     );
 endmodule
 
