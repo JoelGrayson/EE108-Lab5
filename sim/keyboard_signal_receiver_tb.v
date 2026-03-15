@@ -93,7 +93,7 @@ module keyboard_signal_receiver_tb;
     
     always @(*) begin 
         if (new_key == 1'b1) begin //display what the output result is
-            $display("Inputted signal s which is 01101100011");
+            $display("Inputted signal s which is 01101100011"); //01101100011 is indeed what the ground truth was measured to be when I pressed the S key (both from the scope and ILA in hw_ila_2)
             $display("We expect the key_code to be 11000110110, which is what was measured from the oscilloscope");
             $display("What was gotten: %b", key_code);
         end

@@ -99,8 +99,8 @@ module keyboard_signal_receiver(
     // Calculate the next key_code. Should be if in IDLE_STATE changing based on read_bit_index
     always @(*) begin
         casex ({reset, state, p_ps2_clk, ps2_clk})
-            {1'b1, { 5{1'bx} } }: next_key_code = 1'b0; //should be 0 when reset
-            {1'b0, `IDLE_STATE, 1'bx, 1'bx}: next_key_code = 1'b0; //should be 0 when idle
+            {1'b1, { 5{1'bx} } }: next_key_code = 11'b0; //should be 0 when reset
+            {1'b0, `IDLE_STATE, 1'bx, 1'bx}: next_key_code = 11'b0; //should be 0 when idle
             {1'b0, `SAVING_INPUT_STATE, 1'b0, 1'b1}: next_key_code = key_code | (ps2_data << read_bit_index);
             default: next_key_code = key_code;
         endcase
@@ -113,15 +113,18 @@ module keyboard_signal_receiver(
 
 
     // 3/14/26-3:50pm feature to prevent getting stuck in SAVING_INPUT_STATE
-    wire [15:0] next_cycles_since_read_bit_index_changed = read_bit_index != next_read_bit_index
-        ? 16'b0 //a change is happening
-        : cycles_since_read_bit_index_changed + 16'b1;
     wire [15:0] cycles_since_read_bit_index_changed;
-    wire reset_to_idle_flag = cycles_since_read_bit_index_changed > `CYCLE_TIMEOUT; //a boolean
-    dff #(16) cycles_since_read_bit_index_changed_dff(
+    wire reset_to_idle_flag = cycles_since_read_bit_index_changed > `CYCLE_TIMEOUT && state != `IDLE_STATE; //a boolean
+    dffr #(16) cycles_since_read_bit_index_changed_dff(
         .clk(clk),
-        .d(next_cycles_since_read_bit_index_changed),
-        .q(cycles_since_read_bit_index_changed)
+        .d(cycles_since_read_bit_index_changed + 16'b1),
+        .q(cycles_since_read_bit_index_changed),
+        .r(
+            read_bit_index != next_read_bit_index //a change is happening
+            ||
+            state == `IDLE_STATE //when in IDLE reset the counter
+        )
+        //.en(state != `IDLE_STATE) //the counter should only go up when the state is not in IDLE this way it is able to not keep counting when in IDLE
     );
     
 endmodule
