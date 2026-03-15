@@ -128,12 +128,21 @@ module song_reader(
     );
 
 
+    // Need to use p_new_key instead of new_key because need one cycle for the duration/note to settle down for note_player to ingest it (setup time constraint)
+    wire p_new_key; //Value of new_key on clk cycle ago
+    dffr #(1) delay_new_key_dff(
+        .d(new_key),
+        .q(p_new_key),
+        .clk(clk),
+        .r(reset)
+    );
+
 
     // Combine sr (logic from lab4 and songs) with ksr logic
     // to override sr when ksr does something
-    assign new_note = new_key | sr_new_note;
-    assign note = new_key ? keyboard_note : sr_note; //keyboard has higher priority over song reader
-    assign duration = new_key ? `KEYBOARD_NOTE_DURATION : sr_duration;
+    assign new_note = p_new_key | sr_new_note;
+    assign note = p_new_key ? keyboard_note : sr_note; //keyboard has higher priority over song reader
+    assign duration = p_new_key ? `KEYBOARD_NOTE_DURATION : sr_duration;
 
 
     // keyboard_note (probe 1) is the note we have played from the keyboard_signal_rom
