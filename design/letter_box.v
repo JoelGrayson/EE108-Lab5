@@ -23,24 +23,48 @@ module letter_box(
     reg [8:0] tcgrom_starting_addr;
     always @(*) begin
         casex ({ is_second_char, letter })
-            {1'bx, 8'd0}: tcgrom_starting_addr = `BLANK_LETTER; //blank letter
-            {1'b0, 8'd1}: tcgrom_starting_addr = `A_ADDR;
-            {1'b1, 8'd1}: tcgrom_starting_addr = `SHARP_ADDR;
-            {1'b0, 8'd2}: tcgrom_starting_addr = `B_ADDR;
-            {1'b1, 8'd2}: tcgrom_starting_addr = `SHARP_ADDR;
-            {1'b0, 8'd3}: tcgrom_starting_addr = `C_ADDR;
-            {1'b1, 8'd3}: tcgrom_starting_addr = `SHARP_ADDR;
-            {1'b0, 8'd4}: tcgrom_starting_addr = `D_ADDR;
-            {1'b1, 8'd4}: tcgrom_starting_addr = `SHARP_ADDR;
-            {1'bx, 8'd5}: tcgrom_starting_addr = `E_ADDR; //there is no E#
-            {1'b0, 8'd6}: tcgrom_starting_addr = `F_ADDR;
-            {1'b1, 8'd6}: tcgrom_starting_addr = `SHARP_ADDR;
-            {1'b0, 8'd7}: tcgrom_starting_addr = `G_ADDR;
-            {1'b1, 8'd7}: tcgrom_starting_addr = `SHARP_ADDR;
+            // 0 is blank
+            {1'bx, 4'd0}: tcgrom_starting_addr = `BLANK_LETTER; //blank letter
+            // 1 is A
+            {1'b0, 4'd1}: tcgrom_starting_addr = `A_ADDR;
+            {1'b1, 4'd1}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 2 is A#
+            {1'b0, 4'd2}: tcgrom_starting_addr = `A_ADDR;
+            {1'b1, 4'd2}: tcgrom_starting_addr = `SHARP_ADDR;
+            // 3 is B
+            {1'b0, 4'd3}: tcgrom_starting_addr = `B_ADDR;
+            {1'b1, 4'd3}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 4 is C
+            {1'b0, 4'd4}: tcgrom_starting_addr = `C_ADDR;
+            {1'b1, 4'd4}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 5 is C#
+            {1'b0, 4'd5}: tcgrom_starting_addr = `C_ADDR;
+            {1'b1, 4'd5}: tcgrom_starting_addr = `SHARP_ADDR;
+            // 6 is D
+            {1'b0, 4'd6}: tcgrom_starting_addr = `D_ADDR;
+            {1'b1, 4'd6}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 7 is D#
+            {1'b0, 4'd7}: tcgrom_starting_addr = `D_ADDR;
+            {1'b1, 4'd7}: tcgrom_starting_addr = `SHARP_ADDR;
+            // 8 is E
+            {1'b0, 4'd8}: tcgrom_starting_addr = `E_ADDR;
+            {1'b1, 4'd8}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 9 is F
+            {1'b0, 4'd9}: tcgrom_starting_addr = `F_ADDR;
+            {1'b1, 4'd9}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 10 is F#
+            {1'b0, 4'd10}: tcgrom_starting_addr = `F_ADDR;
+            {1'b1, 4'd10}: tcgrom_starting_addr = `SHARP_ADDR;
+            // 11 is G
+            {1'b0, 4'd11}: tcgrom_starting_addr = `G_ADDR;
+            {1'b1, 4'd11}: tcgrom_starting_addr = `BLANK_LETTER;
+            // 12 is G#
+            {1'b0, 4'd12}: tcgrom_starting_addr = `G_ADDR;
+            {1'b1, 4'd12}: tcgrom_starting_addr = `SHARP_ADDR;
+
             default: tcgrom_starting_addr = `BLANK_LETTER; //for debugging, use some other letter like 9'h170, the period (.)
         endcase
     end
-
 
 
     // BEGIN (2) tcg_rom_addr from tcgrom_starting_addr and rel_y
