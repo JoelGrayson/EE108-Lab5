@@ -2,6 +2,7 @@ module note_text_display(
     input clk,
     input reset,
     input wire [7:0] x_scaled, //0 to 255
+        // this is 8 cells of 32 width each
     input wire [7:0] y_scaled, //0 to 255
     input wire in_region, //bool indicating that in the region. When false, the y_scaled value can't be trusted
     input wire [5:0] curr_note, //0 to 63. Spans multiple octaves.
@@ -58,7 +59,7 @@ module note_text_display(
     );
     // Previous note
     letter_box cell4(
-        .in_region(x_scaled >= 32 * 3 && x_scaled <= 32 * 3 && is_y_in_region),
+        .in_region(x_scaled >= 32 * 3 && x_scaled <= 32 * 4 && is_y_in_region),
         .rel_x((x_scaled - 32 * 3) / 4),
         .rel_y(y_scaled / 4),
         .letter(p_note_letter),
@@ -66,7 +67,7 @@ module note_text_display(
         .is_pixel_on(cell4_is_pixel_on)
     );
     letter_box cell5(
-        .in_region(x_scaled >= 32 * 4 && x_scaled <= 32 * 4 && is_y_in_region),
+        .in_region(x_scaled >= 32 * 4 && x_scaled <= 32 * 5 && is_y_in_region),
         .rel_x((x_scaled - 32 * 4) / 4),
         .rel_y(y_scaled / 4),
         .letter(p_note_letter),
@@ -75,7 +76,7 @@ module note_text_display(
     );
     // Anteprevious note
     letter_box cell7(
-        .in_region(x_scaled >= 32 * 6 && x_scaled <= 32 * 6 && is_y_in_region),
+        .in_region(x_scaled >= 32 * 6 && x_scaled <= 32 * 7 && is_y_in_region),
         .rel_x((x_scaled - 32 * 6) / 4),
         .rel_y(y_scaled / 4),
         .letter(curr_note_letter),
@@ -83,7 +84,7 @@ module note_text_display(
         .is_pixel_on(cell7_is_pixel_on)
     );
     letter_box cell8(
-        .in_region(x_scaled >= 32 * 7 && x_scaled <= 32 * 7 && is_y_in_region),
+        .in_region(x_scaled >= 32 * 7 && x_scaled <= 32 * 8 && is_y_in_region),
         .rel_x((x_scaled - 32 * 7) / 4),
         .rel_y(y_scaled / 4),
         .letter(curr_note_letter),
