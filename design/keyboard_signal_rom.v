@@ -36,12 +36,15 @@
 `define J_KEY `B4
 `define K_KEY `C4
 `define L_KEY `D4
+`define SEMICOLON_KEY `E4
+`define QUOTE_KEY `F4
 
 `define W_KEY `C3SHARP
 `define E_KEY `D3SHARP
 
 `define T_KEY `F3SHARP
 `define Y_KEY `G3SHARP
+`define U_KEY `A4SHARP
 
 `define O_KEY `C4SHARP
 `define P_KEY `D4SHARP
@@ -61,10 +64,16 @@
 
 `define PS2_W 8'h1D
 `define PS2_E 8'h24
+
 `define PS2_T 8'h2C
 `define PS2_Y 8'h35
+`define PS2_U 8'h3C
+
 `define PS2_O 8'h44
 `define PS2_P 8'h4D
+
+`define PS2_SEMICOLON 8'h4C
+`define PS2_QUOTE 8'h52
 
 // 01000110110
 // 10001101
@@ -87,15 +96,20 @@ module keyboard_signal_rom(
             `PS2_J: keyboard_note = `J_KEY; // J_NOTE
             `PS2_K: keyboard_note = `K_KEY; // K_NOTE
             `PS2_L: keyboard_note = `L_KEY; // L_NOTE
+            `PS2_SEMICOLON: keyboard_note = `SEMICOLON_KEY;
+            `PS2_QUOTE: keyboard_note = `QUOTE_KEY;
 
             `PS2_W: keyboard_note = `W_KEY;
             `PS2_E: keyboard_note = `E_KEY;
+
             `PS2_T: keyboard_note = `T_KEY;
             `PS2_Y: keyboard_note = `Y_KEY;
+            `PS2_U: keyboard_note = `U_KEY;
+            
             `PS2_O: keyboard_note = `O_KEY;
             `PS2_P: keyboard_note = `P_KEY;
             
-            default: keyboard_note = `REST_NOTE; //space bar clears
+            default: keyboard_note = `REST_NOTE; //space bar clears by setting to rest note
         endcase
     end
 
