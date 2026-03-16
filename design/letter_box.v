@@ -76,6 +76,6 @@ module letter_box(
     );
 
     // BEGIN (3) is_pixel_on from tcg_rom_data and in_region
-    assign is_pixel_on = in_region & tcgrom_data[rel_x];
+    assign is_pixel_on = in_region & tcgrom_data[3'd7 - rel_x]; //the LSB to MSB is right to left so we need to subtract
 endmodule
 

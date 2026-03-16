@@ -102,7 +102,8 @@ module note_text_display(
 
         .probe0(curr_note_letter), // input wire [3:0]  probe0  
         .probe1(p_note_letter), // input wire [3:0]  probe1 
-        .probe2(pp_note_letter) // input wire [3:0]  probe2
+        .probe2(pp_note_letter), // input wire [3:0]  probe2
+        .probe3(note_just_changed) //used for trigger
     );
 endmodule
 
