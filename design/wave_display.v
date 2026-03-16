@@ -89,7 +89,7 @@ module wave_display (
         .reset(reset),
         .x_scaled(x - (`MIDDLE_X - 128)),
         .y_scaled(y - `WAVE_START_Y),
-        .curr_y(curr_y), //read_value AKA curr_y (from RAM)
+        .curr_note(curr_note),
         .in_region(
             // y is in the bottom half of the screen
             y >= `WAVE_START_Y
@@ -98,8 +98,7 @@ module wave_display (
             && x >= (`MIDDLE_X - 128)
             && x <= (`MIDDLE_X + 127)
         ),
-        .curr_note(curr_note),
-
+        
         .is_pixel_on(ntd_is_pixel_on)
     );
     

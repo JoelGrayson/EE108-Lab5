@@ -1,6 +1,8 @@
 `timescale 1ns/1ps
 
-module note_text_display_tb();
+// Try inputting A# in note_text_display with .is_second_char(0) and seeing that when you do the appropriate x and y values it is indeed setting the correct is_pixel_on values. Try it with .is_second_char(1) and see that it is showing a # sign.
+
+module letter_box_tb();
     reg clk, reset;
     reg [7:0] x_scaled, y_scaled, curr_y;
     reg in_region;
