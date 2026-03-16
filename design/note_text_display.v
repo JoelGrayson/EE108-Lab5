@@ -38,54 +38,54 @@ module note_text_display(
 
     // BEGIN (2) Show note_letter with letter_box
     wire cell1_is_pixel_on, cell2_is_pixel_on, cell4_is_pixel_on, cell5_is_pixel_on, cell7_is_pixel_on, cell8_is_pixel_on;
-    wire is_y_in_region = scaled_y >= 0 && scaled_y <= 32;
+    wire is_y_in_region = y_scaled >= 0 && y_scaled <= 32;
     // Current note
     letter_box cell1(
-        .in_region(scaled_x >= 32 * 0 && scaled_x <= 32 * 1 && is_y_in_region),
-        .rel_x(scaled_x / 4),
-        .rel_y(scaled_y / 4),
+        .in_region(x_scaled >= 32 * 0 && x_scaled <= 32 * 1 && is_y_in_region),
+        .rel_x(x_scaled / 4),
+        .rel_y(y_scaled / 4),
         .letter(pp_note_letter),
         .is_second_char(0),
         .is_pixel_on(cell1_is_pixel_on)
     );
     letter_box cell2(
-        .in_region(scaled_x >= 32 * 1 && scaled_x <= 32 * 2 && is_y_in_region),
-        .rel_x((scaled_x - 32 * 1) / 4),
-        .rel_y(scaled_y / 4),
+        .in_region(x_scaled >= 32 * 1 && x_scaled <= 32 * 2 && is_y_in_region),
+        .rel_x((x_scaled - 32 * 1) / 4),
+        .rel_y(y_scaled / 4),
         .letter(pp_note_letter),
         .is_second_char(1),
         .is_pixel_on(cell2_is_pixel_on)
     );
     // Previous note
     letter_box cell4(
-        .in_region(scaled_x >= 32 * 3 && scaled_x <= 32 * 3 && is_y_in_region),
-        .rel_x((scaled_x - 32 * 3) / 4),
-        .rel_y(scaled_y / 4),
+        .in_region(x_scaled >= 32 * 3 && x_scaled <= 32 * 3 && is_y_in_region),
+        .rel_x((x_scaled - 32 * 3) / 4),
+        .rel_y(y_scaled / 4),
         .letter(p_note_letter),
         .is_second_char(0),
         .is_pixel_on(cell4_is_pixel_on)
     );
     letter_box cell5(
-        .in_region(scaled_x >= 32 * 4 && scaled_x <= 32 * 4 && is_y_in_region),
-        .rel_x((scaled_x - 32 * 4) / 4),
-        .rel_y(scaled_y / 4),
+        .in_region(x_scaled >= 32 * 4 && x_scaled <= 32 * 4 && is_y_in_region),
+        .rel_x((x_scaled - 32 * 4) / 4),
+        .rel_y(y_scaled / 4),
         .letter(p_note_letter),
         .is_second_char(1),
         .is_pixel_on(cell5_is_pixel_on)
     );
     // Anteprevious note
     letter_box cell7(
-        .in_region(scaled_x >= 32 * 6 && scaled_x <= 32 * 6 && is_y_in_region),
-        .rel_x((scaled_x - 32 * 6) / 4),
-        .rel_y(scaled_y / 4),
+        .in_region(x_scaled >= 32 * 6 && x_scaled <= 32 * 6 && is_y_in_region),
+        .rel_x((x_scaled - 32 * 6) / 4),
+        .rel_y(y_scaled / 4),
         .letter(curr_note_letter),
         .is_second_char(0),
         .is_pixel_on(cell7_is_pixel_on)
     );
     letter_box cell8(
-        .in_region(scaled_x >= 32 * 7 && scaled_x <= 32 * 7 && is_y_in_region),
-        .rel_x((scaled_x - 32 * 7) / 4),
-        .rel_y(scaled_y / 4),
+        .in_region(x_scaled >= 32 * 7 && x_scaled <= 32 * 7 && is_y_in_region),
+        .rel_x((x_scaled - 32 * 7) / 4),
+        .rel_y(y_scaled / 4),
         .letter(curr_note_letter),
         .is_second_char(1),
         .is_pixel_on(cell8_is_pixel_on)

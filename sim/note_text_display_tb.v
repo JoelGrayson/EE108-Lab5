@@ -2,15 +2,15 @@
 
 module note_text_display_tb();
     reg clk, reset;
-    reg [7:0] x_scaled, y_scaled, curr_y;
+    reg [7:0] x, x, curr_y;
     reg in_region;
     wire is_pixel_on;
     
     note_text_display dut(
         .clk(clk),
         .reset(reset),
-        .x_scaled(x_scaled),
-        .y_scaled(y_scaled),
+        .x(x),
+        .x(x),
         .valid(valid),
         .read_value(read_value),
         .read_index(read_index),

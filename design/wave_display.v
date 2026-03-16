@@ -6,9 +6,10 @@
 `define WIDTH 11'd800 // X from 88 to 888. Using 256*3 = 768
 `define HEIGHT 10'd480 // Y from 32 to 32+480=512
 
-`define WAVE_START_Y (`INIT_Y + (`HEIGHT / 2'd2) + 15 + 10)
-`define WAVE_END_Y `WAVE_START_Y + 256
 `define MIDDLE_X `INIT_X + (`WIDTH / 2)
+// TEXT_END_X/Y is TEXT_START_X/Y + 256
+`define TEXT_START_Y (`INIT_Y + (`HEIGHT / 2'd2) + 15 + 10)
+`define TEXT_START_X `MIDDLE_X - 128
 
 module wave_display (
     input clk,
@@ -86,10 +87,10 @@ module wave_display (
 
     // Show an A on the screen to test that it works
     wire test_is_pixel_on;
-    letter_box test_letter_box( //puts an A at 300, `WAVE_START_Y
-        .in_region(x > 300 && x < 300 + 8 && y > `WAVE_START_Y && y < `WAVE_START_Y + 8),
+    letter_box test_letter_box( //puts an A at 300, `TEXT_START_Y
+        .in_region(x > 300 && x < 300 + 8 && y > `TEXT_START_Y && y < `TEXT_START_Y + 8),
         .rel_x(x - 300),
-        .rel_y(y - `WAVE_START_Y),
+        .rel_y(y - `TEXT_START_Y),
         .letter(1), //A
         .is_second_char(0),
         .is_pixel_on(test_is_pixel_on)
@@ -99,16 +100,18 @@ module wave_display (
     note_text_display ntd(
         .clk(clk),
         .reset(reset),
-        .x_scaled(x - (`MIDDLE_X - 128)),
-        .y_scaled(y - `WAVE_START_Y),
+        
+        .x_scaled(x - `TEXT_START_X),
+        .y_scaled(y - `TEXT_START_Y),
+
         .curr_note(curr_note),
         .in_region(
             // y is in the bottom half of the screen
-            y >= `WAVE_START_Y
-            && y <= `WAVE_END_Y
+            y >= `TEXT_START_Y
+            && y <= `TEXT_START_Y + 256
             // x is 255 in the center of the screen
-            && x >= (`MIDDLE_X - 128)
-            && x <= (`MIDDLE_X + 127)
+            && x >= `TEXT_START_X
+            && x <= `TEXT_START_X + 256
         ),
         
         .is_pixel_on(ntd_is_pixel_on)
