@@ -155,7 +155,7 @@ module music_player(
     note_player note_player(
         .clk(clk),
         .reset(reset),
-        .play_enable(play), //play is from MCU/song_reader to indicate that the audio should be playing. If it is never set to false, then it will play indefinitely (never stop)
+        .play_enable(/*play*/1'b1), //play is from MCU/song_reader to indicate that the audio should be playing. If it is never set to false, then it will play indefinitely (never stop)
             // keyboard_play is used to indicate that the note should be playing because the keyboard just hit it
         .note_to_load(note),
         .duration_to_load(duration),
