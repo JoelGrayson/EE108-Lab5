@@ -39,7 +39,7 @@ module song_reader(
     wire finished_song = next_note_index[5]; //if overflow occurred. When next_note_index is 10000, you finished playing all first 0-31 notes and should go idle again
 
     
-    dffr #(7) note_dff(
+    dffr #(6) note_dff(
         .clk(clk),
         .d(next_note_index),
         .q(current_note_index),
@@ -95,4 +95,5 @@ module song_reader(
     assign note = current_state == `PLAY_NOTE_STATE ? note_data_note : `REST_NOTE; //TODO: see if this is necessary or if I can just do assign . = note_data_note
     assign duration = current_state == `PLAY_NOTE_STATE ? note_data_duration : `REST_DURATION; // "
 endmodule
+
 

@@ -64,7 +64,7 @@ module keyboard_reader(
         .clk(clk)
     );
     always @(*) begin
-        case ({ state, new_note_pulse, note_done_pulse })
+        casex ({ state, new_note_pulse, note_done_pulse })
             { `KEYBOARD_READER_IDLE_STATE, 1'b1, 1'b0 }: next_state = `KEYBOARD_READER_PLAYING_STATE; //go from idle to playing when new_note
             { `KEYBOARD_READER_PLAYING_STATE, 1'b0, 1'b1 }: next_state = `KEYBOARD_READER_IDLE_STATE; //note_done causes back to idle
             { `KEYBOARD_READER_PLAYING_STATE, 1'bx, 1'bx }: next_state = `KEYBOARD_READER_PLAYING_STATE; //ensure it stays in the same state if not note_done_pulse
@@ -106,4 +106,5 @@ module keyboard_reader(
         .probe11(note_done_pulse) // input wire [0:0]  probe11
     );
 endmodule
+
 
