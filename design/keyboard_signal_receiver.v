@@ -76,7 +76,7 @@ module keyboard_signal_receiver(
 
     // The data from the PS/2. Comes in 11 bit packet.
     reg [10:0] next_ps2_frame;
-    dffr #(11) ps2_seq_dff(
+    dffr #(11) ps2_frame_dff(
         .d(next_ps2_frame),
         .q(ps2_frame),
         .clk(clk),

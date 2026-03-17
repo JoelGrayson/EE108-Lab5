@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="wave_display_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="wave_display_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="44.301 ns"></ZoomEndTime>
+      <Cursor1Time time="0.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="339"></NameColumnWidth>
+      <ValueColumnWidth column_width="208"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="24" />
+   <wvobject fp_name="/wave_display_tb/dut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/cycle" type="array">
+      <obj_property name="ElementShortName">cycle[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cycle[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/x" type="array">
+      <obj_property name="ElementShortName">x[10:0]</obj_property>
+      <obj_property name="ObjectShortName">x[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/y" type="array">
+      <obj_property name="ElementShortName">y[9:0]</obj_property>
+      <obj_property name="ObjectShortName">y[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/valid" type="logic">
+      <obj_property name="ElementShortName">valid</obj_property>
+      <obj_property name="ObjectShortName">valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/read_value" type="array">
+      <obj_property name="ElementShortName">read_value[7:0]</obj_property>
+      <obj_property name="ObjectShortName">read_value[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/read_index" type="logic">
+      <obj_property name="ElementShortName">read_index</obj_property>
+      <obj_property name="ObjectShortName">read_index</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/read_address" type="array">
+      <obj_property name="ElementShortName">read_address[8:0]</obj_property>
+      <obj_property name="ObjectShortName">read_address[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/valid_pixel" type="logic">
+      <obj_property name="ElementShortName">valid_pixel</obj_property>
+      <obj_property name="ObjectShortName">valid_pixel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/r" type="array">
+      <obj_property name="ElementShortName">r[7:0]</obj_property>
+      <obj_property name="ObjectShortName">r[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/g" type="array">
+      <obj_property name="ElementShortName">g[7:0]</obj_property>
+      <obj_property name="ObjectShortName">g[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/b" type="array">
+      <obj_property name="ElementShortName">b[7:0]</obj_property>
+      <obj_property name="ObjectShortName">b[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/x_msb" type="logic">
+      <obj_property name="ElementShortName">x_msb</obj_property>
+      <obj_property name="ObjectShortName">x_msb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/x_lsb" type="logic">
+      <obj_property name="ElementShortName">x_lsb</obj_property>
+      <obj_property name="ObjectShortName">x_lsb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/x_region" type="array">
+      <obj_property name="ElementShortName">x_region[1:0]</obj_property>
+      <obj_property name="ObjectShortName">x_region[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/x_middle" type="array">
+      <obj_property name="ElementShortName">x_middle[6:0]</obj_property>
+      <obj_property name="ObjectShortName">x_middle[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/is_x_in_region" type="logic">
+      <obj_property name="ElementShortName">is_x_in_region</obj_property>
+      <obj_property name="ObjectShortName">is_x_in_region</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/curr_y" type="array">
+      <obj_property name="ElementShortName">curr_y[5:0]</obj_property>
+      <obj_property name="ObjectShortName">curr_y[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/y_msb" type="logic">
+      <obj_property name="ElementShortName">y_msb</obj_property>
+      <obj_property name="ObjectShortName">y_msb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/_y_lsb" type="logic">
+      <obj_property name="ElementShortName">_y_lsb</obj_property>
+      <obj_property name="ObjectShortName">_y_lsb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/p_y" type="array">
+      <obj_property name="ElementShortName">p_y[5:0]</obj_property>
+      <obj_property name="ObjectShortName">p_y[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/is_y_in_region" type="logic">
+      <obj_property name="ElementShortName">is_y_in_region</obj_property>
+      <obj_property name="ObjectShortName">is_y_in_region</obj_property>
+   </wvobject>
+   <wvobject fp_name="/wave_display_tb/dut/is_y_in_wave" type="logic">
+      <obj_property name="ElementShortName">is_y_in_wave</obj_property>
+      <obj_property name="ObjectShortName">is_y_in_wave</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,22 +1,13 @@
-# FPGA Player
+# FPGA Piano
 
-Video demo of keyboard: https://youtu.be/Ti2OOpQMLXY
-[![FPGA Player Demo](thumbnail.png)](https://youtu.be/Ti2OOpQMLXY)
+Demo video: [youtu.be/B2POsO4RqfI](https://youtu.be/B2POsO4RqfI)
+[![FPGA Piano Demo Video](diagrams/thumbnail.png)](https://youtu.be/B2POsO4RqfI)
 
+Made an FPGA read in raw signals coming from a PS/2 keyboard so you can play it like a piano.
 
-## Notes
-wave_display_og is for 1/4 of the screen, as used initially
-wave_display is for the full screen
-The ILAs are not necessary except for debugging and figuring out what is going on when initially creating this codebase.
+Design verilog is in the `design/` folder.
 
+Testbenches for simulation are included in the `sim/` folder.
 
-### Integration Commands
-`set_property CONTROL.TRIGGER_POSITION 30000 [get_hw_ilas hw_ila_2]` for the ILA to see the full signal. Otherwise, it is center-aligned by default like an oscilloscope, meaning it chops off the right part. This is an easier solution than just increasing the memory since I am worried of running out of BRAM. hw_ila_2 corresponds to the ila_1 in my case.
-
-
-
-## ILAs
-* oscilloscope_ila (ila_0) - reads the raw ps2_clk and data signals coming from the keyboard
-* key_code_ila (ila_1) - reads the keyboard code coming from the keyboard_signal_receiver and the keyboard note that is played (from keyboard_signal_rom)
-    * keyboard_note, new_key, and key_code
+Block, state, and timing diagrams are in the `diagrams/` folder.
 
