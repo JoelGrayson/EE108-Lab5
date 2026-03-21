@@ -23,6 +23,7 @@ module keyboard_reader(
     // Get signal from keyboard
     wire [10:0] ps2_frame;
     wire [7:0] ps2_key_code = ps2_frame[8:1];
+    wire new_key;
 
     keyboard_signal_receiver ksr(
         .clk(clk),
